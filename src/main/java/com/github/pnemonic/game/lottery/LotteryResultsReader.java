@@ -9,29 +9,29 @@ import java.util.List;
 
 public abstract class LotteryResultsReader {
 
-	public LotteryResultsReader() {
-		super();
-	}
+    public LotteryResultsReader() {
+        super();
+    }
 
-	public List<LotteryRecord> parse(File file) throws IOException {
-		List<LotteryRecord> records;
-		InputStream in = null;
-		try {
-			in = new FileInputStream(file);
-			records = parse(in);
-		} finally {
-			if (in != null) {
-				try {
-					in.close();
-				} catch (Exception e) {
-					// consume
-				}
-			}
-		}
-		Collections.sort(records);
-		return records;
-	}
+    public List<LotteryRecord> parse(File file) throws IOException {
+        List<LotteryRecord> records;
+        InputStream in = null;
+        try {
+            in = new FileInputStream(file);
+            records = parse(in);
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (Exception e) {
+                    // consume
+                }
+            }
+        }
+        Collections.sort(records);
+        return records;
+    }
 
-	public abstract List<LotteryRecord> parse(InputStream in) throws IOException;
+    public abstract List<LotteryRecord> parse(InputStream in) throws IOException;
 
 }

@@ -11,47 +11,47 @@ import java.util.Set;
 
 public abstract class Tester {
 
-	protected final Lottery lottery;
-	protected final int lotterySize;
-	protected final int lotteryMin;
-	protected final int lotteryMax;
-	protected final int numBalls;
+    protected final Lottery lottery;
+    protected final int lotterySize;
+    protected final int lotteryMin;
+    protected final int lotteryMax;
+    protected final int numBalls;
 
-	protected List<LotteryRecord> records;
-	protected int recordsSize;
-	protected int numGamesTotal;
-	protected NumberStatistic[][] numStats;
+    protected List<LotteryRecord> records;
+    protected int recordsSize;
+    protected int numGamesTotal;
+    protected NumberStatistic[][] numStats;
 
-	/**
-	 * Creates a new tester.
-	 */
-	public Tester(Lottery lottery) {
-		super();
-		this.lottery = lottery;
-		this.lotterySize = lottery.size();
-		this.lotteryMin = lottery.getMinimum();
-		this.lotteryMax = lottery.getMaximum();
-		this.numBalls = lottery.getNumberBalls();
-	}
+    /**
+     * Creates a new tester.
+     */
+    public Tester(Lottery lottery) {
+        super();
+        this.lottery = lottery;
+        this.lotterySize = lottery.size();
+        this.lotteryMin = lottery.getMinimum();
+        this.lotteryMax = lottery.getMaximum();
+        this.numBalls = lottery.getNumberBalls();
+    }
 
-	public abstract void parse(File file) throws IOException;
+    public abstract void parse(File file) throws IOException;
 
-	public abstract void drive();
+    public abstract void drive();
 
-	protected abstract void drive(NumberStatisticGrouping grouping, String name);
+    protected abstract void drive(NumberStatisticGrouping grouping, String name);
 
-	protected Set<LotteryGame> play(int numGames) {
-		Set<LotteryGame> games = lottery.play(numGames);
-		int gamesSize = games.size();
-		int retry = 10;
-		while ((gamesSize < numGames) && (gamesSize > 1)) {
-			games.addAll(lottery.play(numGames - gamesSize));
-			gamesSize = games.size();
-			retry--;
-			if (retry == 0) {
-				break;
-			}
-		}
-		return games;
-	}
+    protected Set<LotteryGame> play(int numGames) {
+        Set<LotteryGame> games = lottery.play(numGames);
+        int gamesSize = games.size();
+        int retry = 10;
+        while ((gamesSize < numGames) && (gamesSize > 1)) {
+            games.addAll(lottery.play(numGames - gamesSize));
+            gamesSize = games.size();
+            retry--;
+            if (retry == 0) {
+                break;
+            }
+        }
+        return games;
+    }
 }

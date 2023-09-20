@@ -1,11 +1,11 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.6.10"
+    kotlin("jvm") version "1.8.20"
     application
 }
 
-group = "com.github.lottery"
+group = "com.github.pnemonic.lottery"
 version = "1.0"
 
 repositories {
@@ -13,7 +13,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.opencsv:opencsv:5.5.2")
+    implementation("com.opencsv:opencsv:5.8")
 
     testImplementation(kotlin("test"))
 }
@@ -23,7 +23,7 @@ tasks.test {
 }
 
 tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.jvmTarget = JavaVersion.VERSION_17.toString()
 }
 
 application {

@@ -1,37 +1,20 @@
-package com.github.pnemonic.game.lottery;
+package com.github.pnemonic.game.lottery
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collections;
-import java.util.List;
+import java.io.File
+import java.io.FileInputStream
+import java.io.IOException
+import java.io.InputStream
 
-public abstract class LotteryResultsReader {
-
-    public LotteryResultsReader() {
-        super();
-    }
-
-    public List<LotteryRecord> parse(File file) throws IOException {
-        List<LotteryRecord> records;
-        InputStream in = null;
-        try {
-            in = new FileInputStream(file);
-            records = parse(in);
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (Exception e) {
-                    // consume
-                }
-            }
+abstract class LotteryResultsReader {
+    @Throws(IOException::class)
+    fun parse(file: File): List<LotteryRecord> {
+        val records: List<LotteryRecord>
+        FileInputStream(file).use {
+            records = parse(it)
         }
-        Collections.sort(records);
-        return records;
+        return records.sorted()
     }
 
-    public abstract List<LotteryRecord> parse(InputStream in) throws IOException;
-
+    @Throws(IOException::class)
+    abstract fun parse(input: InputStream): List<LotteryRecord>
 }

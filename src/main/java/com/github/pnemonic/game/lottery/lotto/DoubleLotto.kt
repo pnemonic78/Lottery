@@ -1,39 +1,30 @@
-package com.github.pnemonic.game.lottery.lotto;
+package com.github.pnemonic.game.lottery.lotto
 
-import com.github.pnemonic.game.lottery.LotteryGame;
-
-import java.util.Set;
-
+import com.github.pnemonic.game.lottery.LotteryGame
+import kotlin.math.floor
 
 /**
  * Choose numbers for Double Lotto for Israel.
  *
  * @author Moshe
  */
-public class DoubleLotto extends Lotto {
-
-    /**
-     * Constructs a new Lotto.
-     */
-    public DoubleLotto() {
-        super();
-    }
-
-    /**
-     * Main method.
-     *
-     * @param args the array of arguments.
-     */
-    public static void main(String[] args) {
-        DoubleLotto lotto = new DoubleLotto();
-        double budget = 100.00;
-        double cost = COST * 2; // Double Lotto costs 2x
-        int plays = (int) Math.floor(budget / cost);
-        plays &= ~1; // Lotto played in pairs.
-        Set<LotteryGame> games = lotto.play(plays);
-        for (LotteryGame game : games) {
-            lotto.print(game);
+class DoubleLotto : Lotto() {
+    companion object {
+        /**
+         * Main method.
+         *
+         * @param args the array of arguments.
+         */
+        fun main(args: Array<String>) {
+            val lotto = DoubleLotto()
+            val budget = 100.00
+            val cost = COST * 2 // Double Lotto costs 2x
+            var plays = floor(budget / cost).toInt()
+            plays = plays and 1.inv() // Lotto played in pairs.
+            val games: Set<LotteryGame> = lotto.play(plays)
+            for (game in games) {
+                lotto.print(game)
+            }
         }
     }
-
 }

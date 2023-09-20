@@ -1,92 +1,61 @@
-package com.github.pnemonic.game.lottery.lotto;
+package com.github.pnemonic.game.lottery.lotto
 
-import com.github.pnemonic.game.NumberStatistic;
-import com.github.pnemonic.game.lottery.LotteryResultsReader;
-import com.github.pnemonic.game.lottery.LotteryStats;
-
-import java.io.File;
+import com.github.pnemonic.game.NumberStatistic
+import com.github.pnemonic.game.lottery.LotteryResultsReader
+import com.github.pnemonic.game.lottery.LotteryStats
+import java.io.File
+import kotlin.math.min
 
 /**
  * Lotto statistics.
  *
  * @author Moshe
  */
-public class LottoStats extends LotteryStats {
-
-    /**
-     * Constructs a new Lotto statistics.
-     */
-    public LottoStats(Lotto lottery) {
-        super(lottery, 6);
+class LottoStats(lottery: Lotto) : LotteryStats(lottery, 6) {
+    override fun createResultsReader(): LotteryResultsReader {
+        return LottoResultsReader()
     }
 
-    /**
-     * Main method.
-     *
-     * @param args the array of arguments.
-     */
-    public static void main(String[] args) {
-        String fileName = (args.length == 0) ? "results/Lotto.csv" : args[0];
-        File file = new File(fileName);
-        LottoStats stats = new LottoStats(new Lotto());
-        stats.parse(file);
-    }
-
-    @Override
-    protected LotteryResultsReader createResultsReader() {
-        return new LottoResultsReader();
-    }
-
-    protected void printNumberStats() {
-        System.out.println("max. repeat: " + maxRepeat);
-
-        // NumberStatistic nstat;
-        NumberStatistic[] nstatRow;
-        // System.out.print("seq");
-        // for (int n = 1; n <= 37; n++) {
-        // System.out.print("\t");
-        // System.out.print(n);
-        // }
-        // System.out.println();
-        // for (int row = 0; row < numStats.length; row++) {
-        // nstatRow = numStats[row];
-        // nstat = nstatRow[0];
-        // System.out.print(recStats.get(row).record.sequence);
-        // for (int col = 0; col < nstatRow.length; col++) {
-        // nstat = nstatRow[col];
-        // System.out.print("\t");
-        // System.out.print(nstat.count);
-        // }
-        // System.out.println();
-        // }
-
-        final int THRESHOLD_CANDIDATES_PERCENT = 50;
-        final int thresholdCandidates = (numBalls * THRESHOLD_CANDIDATES_PERCENT) / 100;
-        final int thresholdCandidatesAnd = Math.min((thresholdCandidates * 3) / 2, numBalls / 2);
-        final int thresholdCandidatesOr = thresholdCandidates / 2;
-        final int thresholdCandidatesOr3 = thresholdCandidates / 3;
-        final int thresholdCandidatesOr4 = thresholdCandidates / 4;
-        final int lotteryMin = lottery.getMinimum();
-        final int lotteryMax = lottery.getMaximum();
-        nstatRow = numStats[numStats.length - 1];
-        StringBuffer asJava = new StringBuffer();
-        int i = 0;
-        boolean add;
-        for (NumberStatistic nstat : nstatRow) {
-            System.out.println(nstat);
-            add = (nstat.id >= lotteryMin) && (nstat.id <= lotteryMax);
-            add &= nstat.repeat < maxRepeat;
+    override fun printNumberStats() {
+        println("max. repeat: $maxRepeat")
+        val thresholdCandidates = numBalls * THRESHOLD_CANDIDATES_PERCENT / 100
+        val thresholdCandidatesAnd = min(thresholdCandidates * 3 / 2, numBalls / 2)
+        val lotteryMin = lottery.minimum
+        val lotteryMax = lottery.maximum
+        val nstatRow: Array<NumberStatistic?> = numStats!![numStats!!.lastIndex]
+        val asJava = StringBuilder()
+        var add: Boolean
+        for (nr in nstatRow) {
+            val nstat = nr!!
+            println(nstat)
+            add = nstat.id >= lotteryMin && nstat.id <= lotteryMax
+            add = add and (nstat.repeat < maxRepeat)
             // Copy from Tester#nextCandidates and paste here:
-            add &= (nstat.indexLeastCount < thresholdCandidatesAnd) && (nstat.indexMostUsed < thresholdCandidatesAnd);
+            add =
+                add and (nstat.indexLeastCount < thresholdCandidatesAnd && nstat.indexMostUsed < thresholdCandidatesAnd)
             if (add) {
-                if (asJava.length() > 0) {
-                    asJava.append(',');
+                if (asJava.isNotEmpty()) {
+                    asJava.append(',')
                 }
-                asJava.append(nstat.id);
-                i++;
+                asJava.append(nstat.id)
             }
         }
-        System.out.println(asJava);
+        println(asJava)
     }
 
+    companion object {
+        /**
+         * Main method.
+         *
+         * @param args the array of arguments.
+         */
+        fun main(args: Array<String>) {
+            val fileName = if (args.isEmpty()) "results/Lotto.csv" else args[0]
+            val file = File(fileName)
+            val stats = LottoStats(Lotto())
+            stats.parse(file)
+        }
+
+        private const val THRESHOLD_CANDIDATES_PERCENT = 50
+    }
 }

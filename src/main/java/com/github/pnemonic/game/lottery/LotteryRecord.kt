@@ -1,57 +1,45 @@
-package com.github.pnemonic.game.lottery;
+package com.github.pnemonic.game.lottery
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Calendar;
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.Arrays
+import java.util.Calendar
 
-public class LotteryRecord implements Comparable<LotteryRecord> {
+class LotteryRecord @JvmOverloads constructor(
+    lottery: Lottery?,
+    size: Int = lottery?.size ?: 0
+) : Comparable<LotteryRecord> {
+    @JvmField
+    var id = 0
+    @JvmField
+    var date: Calendar? = null
+    @JvmField
+    val lot: IntArray = IntArray(size)
+    @JvmField
+    var bonus = 0
 
-    protected static final DateFormat format = new SimpleDateFormat();
+    private val bonusMin: Int = lottery?.bonusMinimum ?: 0
+    private val bonusMax: Int = lottery?.bonusMaximum ?: 0
 
-    protected Lottery lottery;
-    public int id;
-    public Calendar date;
-    public final int[] lot;
-    public int bonus;
-    private final int bonusMin;
-    private final int bonusMax;
+    constructor(size: Int) : this(null, size)
 
-    public LotteryRecord(int size) {
-        this(null, size);
+    override fun compareTo(other: LotteryRecord): Int {
+        return id - other.id
     }
 
-    public LotteryRecord(Lottery lottery) {
-        this(lottery, lottery.size());
+    override fun hashCode(): Int {
+        return id
     }
 
-    public LotteryRecord(Lottery lottery, int size) {
-        super();
-        this.lottery = lottery;
-        this.lot = new int[size];
-        this.bonusMin = (lottery == null) ? 0 : lottery.getBonusMinimum();
-        this.bonusMax = (lottery == null) ? 0 : lottery.getBonusMaximum();
-    }
-
-    public int compareTo(LotteryRecord that) {
-        return this.id - that.id;
-    }
-
-    @Override
-    public int hashCode() {
-        return id;
-    }
-
-    @Override
-    public String toString() {
-        StringBuffer buf = new StringBuffer();
-        buf.append(format.format(date.getTime())).append(' ');
-        buf.append(id).append(": ");
-        for (int ball : lot) {
-            buf.append(ball).append(' ');
+    override fun toString(): String {
+        val buf = StringBuilder()
+        date?.let { buf.append(format.format(it.time)).append(' ') }
+        buf.append(id).append(": ")
+        for (ball in lot) {
+            buf.append(ball).append(' ')
         }
-        buf.append('+').append(bonus);
-        return buf.toString();
+        buf.append('+').append(bonus)
+        return buf.toString()
     }
 
     /**
@@ -61,19 +49,22 @@ public class LotteryRecord implements Comparable<LotteryRecord> {
      * @param game the game.
      * @return the score.
      */
-    public int compareTo(LotteryGame game) {
-        int same = 0;
-        for (int ball : game.lot) {
-            if (Arrays.binarySearch(this.lot, ball) >= 0) {
-                same += 100;
+    operator fun compareTo(game: LotteryGame): Int {
+        var same = 0
+        for (ball in game.lot) {
+            if (Arrays.binarySearch(lot, ball) >= 0) {
+                same += 100
             }
         }
-        if (this.bonus == game.bonus) {
-            if ((lottery == null) || (bonusMin < bonusMax)) {
-                same++;
+        if (bonus == game.bonus) {
+            if (bonusMin < bonusMax) {
+                same++
             }
         }
+        return same
+    }
 
-        return same;
+    companion object {
+        protected val format: DateFormat = SimpleDateFormat()
     }
 }

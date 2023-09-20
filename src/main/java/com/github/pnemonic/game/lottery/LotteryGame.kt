@@ -1,76 +1,58 @@
-package com.github.pnemonic.game.lottery;
-
-import java.util.Arrays;
+package com.github.pnemonic.game.lottery
 
 /**
  * Lottery game.
  *
  * @author Moshe
  */
-public class LotteryGame implements Comparable<LotteryGame> {
+class LotteryGame(size: Int) : Comparable<LotteryGame> {
+    @JvmField
+    var id = 0
+    @JvmField
+    var lot: IntArray = IntArray(size)
+    @JvmField
+    var bonus = 0
 
-    public int id;
-    public int[] lot;
-    public int bonus;
-
-    /**
-     * Constructs a new game.
-     */
-    public LotteryGame() {
-        super();
+    override fun hashCode(): Int {
+        return id
     }
 
-    /**
-     * Constructs a new game.
-     */
-    public LotteryGame(int size) {
-        super();
-        this.lot = new int[size];
-    }
-
-    @Override
-    public int hashCode() {
-        return id;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof LotteryGame) {
-            LotteryGame that = (LotteryGame) obj;
-            return Arrays.equals(this.lot, that.lot) && (this.bonus == that.bonus);
+    override fun equals(other: Any?): Boolean {
+        if (other is LotteryGame) {
+            return lot.contentEquals(other.lot) && bonus == other.bonus
         }
-        return super.equals(obj);
+        return super.equals(other)
     }
 
-    public int compareTo(LotteryGame that) {
-        int size0 = this.lot.length;
-        int size1 = that.lot.length;
-        int comp = size0 - size1;
-        if (comp == 0) {
-            int[] lot0 = this.lot;
-            int[] lot1 = that.lot;
-            for (int i = 0; (i < size0) && (comp == 0); i++) {
-                comp = lot0[i] - lot1[i];
+    override fun compareTo(other: LotteryGame): Int {
+        val size0 = lot.size
+        val size1 = other.lot.size
+        var c = size0 - size1
+        if (c == 0) {
+            val lot0 = lot
+            val lot1 = other.lot
+            var i = 0
+            while (i < size0 && c == 0) {
+                c = lot0[i] - lot1[i]
+                i++
             }
-
-            if (comp == 0) {
-                comp = this.bonus - that.bonus;
-                if (comp == 0) {
-                    comp = this.id - that.id;
+            if (c == 0) {
+                c = bonus - other.bonus
+                if (c == 0) {
+                    c = id - other.id
                 }
             }
         }
-        return comp;
+        return c
     }
 
-    @Override
-    public String toString() {
-        StringBuffer buf = new StringBuffer();
-        buf.append(id).append(": ");
-        for (int ball : lot) {
-            buf.append(ball).append(' ');
+    override fun toString(): String {
+        val buf = StringBuilder()
+        buf.append(id).append(": ")
+        for (ball in lot) {
+            buf.append(ball).append(' ')
         }
-        buf.append('+').append(bonus);
-        return buf.toString();
+        buf.append('+').append(bonus)
+        return buf.toString()
     }
 }

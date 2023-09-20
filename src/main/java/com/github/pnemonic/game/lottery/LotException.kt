@@ -1,26 +1,20 @@
-package com.github.pnemonic.game.lottery;
+package com.github.pnemonic.game.lottery
 
 /**
  * Error with the lottery lot.
  *
  * @author moshew
  */
-public class LotException extends IndexOutOfBoundsException {
-
+class LotException : IndexOutOfBoundsException {
     /**
      * Creates a new exception.
      */
-    public LotException() {
-        super();
-    }
+    constructor() : super()
 
     /**
      * Creates a new exception.
      *
      * @param message the detail message.
      */
-    public LotException(String message) {
-        super(message);
-    }
-
+    constructor(message: String) : super(message)
 }

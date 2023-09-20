@@ -1,96 +1,78 @@
-package com.github.pnemonic.game.lottery;
+package com.github.pnemonic.game.lottery
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.Arrays
+import java.util.TreeSet
+import kotlin.random.Random
 
 /**
  * Lottery.
  *
  * @author Moshe
  */
-public abstract class Lottery {
-
-    protected static final Random rnd = new Random();
-
-    private final Set<Integer> candidates = new TreeSet<Integer>();
-
-    private static final int RETRIES = 10;
-
-    protected final int bonusMinimum;
-    protected final int bonusMaximum;
+abstract class Lottery(@JvmField val size: Int) {
+    private val candidates: MutableSet<Int> = TreeSet()
 
     /**
      * Constructs a new lottery.
      */
-    public Lottery() {
-        super();
-        bonusMinimum = getBonusMinimum();
-        bonusMaximum = getBonusMaximum();
-        setCandidates((int[]) null);
+    init {
+        setCandidates(null as IntArray?)
     }
 
-    public abstract int size();
+    abstract val minimum: Int
 
-    public abstract int getMinimum();
+    abstract val maximum: Int
 
-    public abstract int getMaximum();
+    abstract val bonusMinimum: Int
 
-    public abstract int getBonusMinimum();
+    abstract val bonusMaximum: Int
 
-    public abstract int getBonusMaximum();
-
-    public int getNumberBalls() {
-        return getMaximum() - getMinimum() + 1;
-    }
+    val numberBalls: Int
+        get() = maximum - minimum + 1
 
     /**
      * Choose some numbers.
-     * <p>
+     *
      * Populate the bag of numbers to choose from, and remove 6 candidates.
      *
      * @return the lot of chosen numbers - <tt>null</tt> if game is invalid.
      */
-    public LotteryGame play() {
-        int size = size();
-        List<Integer> bag = createBag();
-        LotteryGame game = new LotteryGame(size);
-        int index, candidate;
-        for (int pick = 0; pick < size; pick++) {
+    fun play(): LotteryGame {
+        val size = this.size
+        val bag = createBag()
+        val game = LotteryGame(size)
+        var index: Int
+        var candidate: Int
+        for (pick in 0 until size) {
             if (bag.isEmpty()) {
-                break;
+                break
             }
-            index = rnd.nextInt(bag.size());
-            candidate = bag.remove(index);
-            game.lot[pick] = candidate;
-            Arrays.sort(game.lot, 0, pick + 1);
-            filter(game, pick, bag);
+            index = rnd.nextInt(bag.size)
+            candidate = bag.removeAt(index)
+            game.lot[pick] = candidate
+            Arrays.sort(game.lot, 0, pick + 1)
+            filter(game, pick, bag)
         }
-        playBonus(game);
-        filterGame(game);
-        return game;
+        playBonus(game)
+        filterGame(game)
+        return game
     }
 
     /**
      * Print the chosen numbers.
      *
-     * @param play the play number.
-     * @param lot  the chosen numbers.
+     * @param game the game.
      */
-    public void print(LotteryGame game) {
-        System.out.print("Play: " + game.id);
-        System.out.print("\tLotto:");
-        for (Integer i : game.lot) {
-            System.out.print("\t" + i);
+    fun print(game: LotteryGame) {
+        print("Play: " + game.id)
+        print("\tLotto:")
+        for (i in game.lot) {
+            print("\t" + i)
         }
         if (game.bonus > 0) {
-            System.out.print("\tBonus: " + game.bonus);
+            print("\tBonus: " + game.bonus)
         }
-        System.out.println();
+        println()
     }
 
     /**
@@ -100,103 +82,103 @@ public abstract class Lottery {
      * @param pickIndex the number index.
      * @param bag       the bag of candidate numbers.
      */
-    protected void filter(LotteryGame game, int pickIndex, List<Integer> bag) {
+    protected open fun filter(game: LotteryGame, pickIndex: Int, bag: MutableList<Int>) {
     }
 
     /**
      * Filter the game by applying various rules of probability.
      *
-     * @param game      the game.
-     * @param pickIndex the number index.
-     * @param bag       the bag of candidate numbers.
+     * @param game the game.
      * @throws LotException if the game's lot is invalid.
      */
-    protected void filterGame(LotteryGame game) throws LotException {
+    @Throws(LotException::class)
+    protected open fun filterGame(game: LotteryGame) {
     }
 
-    public Set<LotteryGame> play(int numGames) {
-        if (numGames <= 0) {
-            throw new IllegalArgumentException("Invalid number of games " + numGames);
-        }
-        Set<LotteryGame> games = new TreeSet<LotteryGame>();
-        LotteryGame game;
-        int play = 1;
-        int retry = 0;
-
-        while (games.size() < numGames) {
+    fun play(numGames: Int): MutableSet<LotteryGame> {
+        require(numGames > 0) { "Invalid number of games $numGames" }
+        val games: MutableSet<LotteryGame> = TreeSet()
+        var game: LotteryGame
+        var play = 1
+        var retry = 0
+        while (games.size < numGames) {
             try {
-                game = play();
-                game.id = play++;
-                games.add(game);
-            } catch (LotException le) {
+                game = play()
+                game.id = play++
+                games.add(game)
+            } catch (le: LotException) {
                 // TODO System.err.println(le.getMessage());
-                retry++;
+                retry++
                 if (retry >= RETRIES) {
-                    break;
+                    break
                 }
             }
         }
-        play = 1;
-        for (LotteryGame g : games) {
-            g.id = play++;
+        play = 1
+        for (g in games) {
+            g.id = play++
         }
-        return games;
+        return games
     }
 
-    protected List<Integer> createBag() {
-        List<Integer> bag = new ArrayList<Integer>(candidates);
-        // Collections.sort(bag);
-        return bag;
+    protected fun createBag(): MutableList<Int> {
+        return ArrayList(candidates)
     }
 
-    public void setCandidates(int[] candidates) {
-        this.candidates.clear();
-        if ((candidates == null) || (candidates.length < size())) {
-            int min = getMinimum();
-            int max = getMaximum();
-            for (int n = min; n <= max; n++) {
-                this.candidates.add(n);
+    fun setCandidates(candidates: IntArray?) {
+        this.candidates.clear()
+        if (candidates == null || candidates.size < size) {
+            val min = minimum
+            val max = maximum
+            for (n in min..max) {
+                this.candidates.add(n)
             }
         } else {
-            for (int n : candidates) {
-                this.candidates.add(n);
+            for (n in candidates) {
+                this.candidates.add(n)
             }
         }
     }
 
-    public void setCandidates(Collection<Integer> candidates) {
-        this.candidates.clear();
-        if ((candidates == null) || (candidates.size() < size())) {
-            int min = getMinimum();
-            int max = getMaximum();
-            for (int n = min; n <= max; n++) {
-                this.candidates.add(n);
+    fun setCandidates(candidates: Collection<Int>?) {
+        this.candidates.clear()
+        if (candidates == null || candidates.size < size) {
+            val min = minimum
+            val max = maximum
+            for (n in min..max) {
+                this.candidates.add(n)
             }
         } else {
-            this.candidates.addAll(candidates);
+            this.candidates.addAll(candidates)
         }
     }
 
-    public void setCandidates(String candidates) {
-        String[] tokens = candidates.split(",");
-        Set<Integer> balls = new TreeSet<Integer>();
-        for (String token : tokens) {
-            balls.add(Integer.valueOf(token));
+    fun setCandidates(candidates: String) {
+        val tokens = candidates.split(",".toRegex()).dropLastWhile { it.isEmpty() }
+            .toTypedArray()
+        val balls: MutableSet<Int> = TreeSet()
+        for (token in tokens) {
+            balls.add(Integer.valueOf(token))
         }
-        setCandidates(balls);
+        setCandidates(balls)
     }
 
-    protected void playBonus(LotteryGame game) {
+    protected fun playBonus(game: LotteryGame) {
         if (bonusMinimum < bonusMaximum) {
-            List<Integer> bag = new ArrayList<Integer>();
-            for (int n = bonusMinimum; n <= bonusMaximum; n++) {
-                bag.add(n);
+            val bag: MutableList<Int> = ArrayList()
+            for (n in bonusMinimum..bonusMaximum) {
+                bag.add(n)
             }
-            int index = rnd.nextInt(bag.size());
-            int candidate = bag.remove(index);
-            game.bonus = candidate;
+            val index = rnd.nextInt(bag.size)
+            val candidate = bag.removeAt(index)
+            game.bonus = candidate
         } else {
-            game.bonus = bonusMinimum;
+            game.bonus = bonusMinimum
         }
+    }
+
+    companion object {
+        protected val rnd = Random.Default
+        private const val RETRIES = 10
     }
 }

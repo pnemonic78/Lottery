@@ -1,87 +1,75 @@
-package com.github.pnemonic.game.lottery.pais777;
+package com.github.pnemonic.game.lottery.pais777
 
-import com.github.pnemonic.csv.CSVFile;
-import com.github.pnemonic.csv.CSVLine;
-import com.github.pnemonic.game.lottery.Lottery;
-import com.github.pnemonic.game.lottery.LotteryRecord;
-import com.github.pnemonic.game.lottery.LotteryResultsReader;
+import com.github.pnemonic.csv.CSVFile
+import com.github.pnemonic.csv.CSVLine
+import com.github.pnemonic.game.lottery.Lottery
+import com.github.pnemonic.game.lottery.LotteryRecord
+import com.github.pnemonic.game.lottery.LotteryResultsReader
+import java.io.IOException
+import java.io.InputStream
+import java.text.DateFormat
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-
-public class Lotto777ResultsReader extends LotteryResultsReader {
-
-    protected static final int COLUMN_DATE = 0;
-    protected static final int COLUMN_SEQ = 1;
-    protected static final int COLUMN_BALL = 2;
-
-    protected static final int NUM_BALLS = 17;
-
-    public Lotto777ResultsReader() {
-        super();
-    }
-
-    @Override
-    public List<LotteryRecord> parse(InputStream in) throws IOException {
-        List<LotteryRecord> records = new ArrayList<LotteryRecord>();
-        CSVFile csv = new CSVFile(in);
-        Iterator<CSVLine> lines = csv.iterator();
-        CSVLine line;
-        String[] columns;
-        Lottery lottery = new Lotto777();
-        LotteryRecord record;
-        Date date;
-        DateFormat format = new SimpleDateFormat("dd/MM/yy");
+class Lotto777ResultsReader : LotteryResultsReader() {
+    @Throws(IOException::class)
+    override fun parse(input: InputStream): List<LotteryRecord> {
+        val records: MutableList<LotteryRecord> = ArrayList()
+        val csv = CSVFile(input)
+        val lines = csv.iterator()
+        var line: CSVLine
+        var columns: Array<String>
+        val lottery: Lottery = Lotto777()
+        var record: LotteryRecord
+        val format: DateFormat = SimpleDateFormat("dd/MM/yy")
 
         // ignore header
-        lines.next();
+        lines.next()
         while (lines.hasNext()) {
-            line = lines.next();
-            record = new LotteryRecord(lottery, NUM_BALLS);
-            columns = getCleanColumns(line);
+            line = lines.next()
+            record = LotteryRecord(lottery, NUM_BALLS)
+            columns = getCleanColumns(line)
 
-            record.id = Integer.parseInt(columns[COLUMN_SEQ]);
-            record.date = Calendar.getInstance();
+            record.id = columns[COLUMN_SEQ].toInt()
+            record.date = Calendar.getInstance()
             try {
-                date = format.parse(columns[COLUMN_DATE]);
-                record.date.setTime(date);
-            } catch (ParseException e) {
+                record.date!!.time = format.parse(columns[COLUMN_DATE])
+            } catch (e: ParseException) {
                 // ignore date
             }
-            for (int l = 0, col = COLUMN_BALL; l < NUM_BALLS; l++, col++) {
-                record.lot[l] = Integer.parseInt(columns[col]);
+            var col = COLUMN_BALL
+            for (l in 0 until  NUM_BALLS) {
+                record.lot[l] = columns[col++].toInt()
             }
-
-            addRecord(records, record);
+            addRecord(records, record)
         }
-
-        csv.close();
-
-        return records;
+        csv.close()
+        return records
     }
 
-    protected void addRecord(List<LotteryRecord> records, LotteryRecord record) {
-        records.add(record);
+    protected fun addRecord(records: MutableList<LotteryRecord>, record: LotteryRecord) {
+        records.add(record)
     }
 
-    protected String[] getCleanColumns(CSVLine line) {
-        String[] columns = line.getColumns();
-        String col;
-        for (int i = 0; i < columns.length; i++) {
-            col = columns[i];
-            if ((col.length() > 0) && (col.charAt(0) == '=')) {
-                col = col.substring(1);
+    protected fun getCleanColumns(line: CSVLine): Array<String> {
+        val columns = line.columns
+        var col: String
+        for (i in columns.indices) {
+            col = columns[i]
+            if (col.isNotEmpty() && col[0] == '=') {
+                col = col.substring(1)
             }
-            columns[i] = col;
+            columns[i] = col
         }
-        return columns;
+        return columns
+    }
+
+    companion object {
+        private const val COLUMN_DATE = 0
+        private const val COLUMN_SEQ = 1
+        private const val COLUMN_BALL = 2
+        private const val NUM_BALLS = 17
     }
 }

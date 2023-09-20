@@ -1,18 +1,4 @@
-package com.github.pnemonic.game;
+package com.github.pnemonic.game
 
-import java.util.Comparator;
-
-public abstract class CompareNumber implements Comparator<NumberStatistic> {
-
-    protected final boolean descending;
-
-    public CompareNumber() {
-        this(false);
-    }
-
-    public CompareNumber(boolean descending) {
-        super();
-        this.descending = descending;
-    }
-
-}
+abstract class CompareNumber @JvmOverloads constructor(@JvmField protected val descending: Boolean = false) :
+    Comparator<NumberStatistic?>

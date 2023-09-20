@@ -1,5 +1,3 @@
-package com.github.pnemonic.game;
+package com.github.pnemonic.game
 
-public class Statistic {
-
-}
+open class Statistic

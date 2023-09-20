@@ -1,80 +1,57 @@
-package com.github.pnemonic.game.lottery.pais123;
+package com.github.pnemonic.game.lottery.pais123
 
-import com.github.pnemonic.game.lottery.Lottery;
-import com.github.pnemonic.game.lottery.LotteryGame;
-
-import java.util.Set;
+import com.github.pnemonic.game.lottery.Lottery
+import kotlin.math.floor
 
 /**
  * Choose numbers for 123 for Israel.
  *
  * @author Moshe
  */
-public class Lotto123 extends Lottery {
+class Lotto123 : Lottery(SIZE) {
 
-    /**
-     * Cost per game.
-     */
-    public static final double BUDGET = 10;
-    /**
-     * Cost per game.
-     */
-    public static final double COST = 1;
-    /**
-     * Total number of plays per budget.
-     */
-    public static final int PLAYS = (int) Math.floor(BUDGET / COST);
+    override val minimum: Int = 0
 
-    private static final int SIZE = 1;
+    override val maximum: Int = 9
 
-    /**
-     * Constructs a new 123.
-     */
-    public Lotto123() {
-        super();
-    }
+    override val bonusMinimum: Int = 0
 
-    /**
-     * Main method.
-     *
-     * @param args the array of arguments.
-     */
-    public static void main(String[] args) {
-        Lotto123 lottery = new Lotto123();
-        if (args.length > 0) {
-            lottery.setCandidates(args[0]);
+    override val bonusMaximum: Int = 0
+
+    companion object {
+        /**
+         * Cost per game.
+         */
+        private const val BUDGET = 10.0
+
+        /**
+         * Cost per game.
+         */
+        private const val COST = 1.0
+
+        /**
+         * Total number of plays per budget.
+         */
+        @JvmField
+        val PLAYS = floor(BUDGET / COST).toInt()
+
+        private const val SIZE = 1
+
+        /**
+         * Main method.
+         *
+         * @param args the array of arguments.
+         */
+        fun main(args: Array<String>) {
+            val lottery = Lotto123()
+            if (args.isNotEmpty()) {
+                lottery.setCandidates(args[0])
+            }
+            val plays = PLAYS
+            val games = lottery.play(plays)
+            for (game in games) {
+                lottery.print(game)
+            }
         }
-
-        int plays = PLAYS;
-        Set<LotteryGame> games = lottery.play(plays);
-        for (LotteryGame game : games) {
-            lottery.print(game);
-        }
     }
-
-    @Override
-    public int size() {
-        return SIZE;
-    }
-
-    @Override
-    public int getMinimum() {
-        return 0;
-    }
-
-    @Override
-    public int getMaximum() {
-        return 9;
-    }
-
-    @Override
-    public int getBonusMinimum() {
-        return 0;
-    }
-
-    @Override
-    public int getBonusMaximum() {
-        return 0;
-    }
-
 }

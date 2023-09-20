@@ -1,77 +1,97 @@
-package com.github.pnemonic.game;
+package com.github.pnemonic.game
 
-public class NumberStatistic extends Statistic implements Comparable<NumberStatistic> {
+class NumberStatistic : Statistic(), Comparable<NumberStatistic> {
     /**
      * The ball value.
      */
-    public int id;
+    @JvmField
+    var id = 0
+
     /**
      * Number of occurrences of this ball in the game.
      */
-    public int occur;
+    @JvmField
+    var occur = 0
+
     /**
      * Total number of occurrences.
      */
-    public int count;
+    @JvmField
+    var count = 0
+
     /**
      * Usage (age).
      */
-    public float usage;
+    @JvmField
+    var usage = 0f
+
     /**
      * Total number of repetitions of consecutive games. Related to
-     * {@link #usage}.
+     * [.usage].
      */
-    public int repeat;
+    @JvmField
+    var repeat = 0
+
     /**
      * Maximum number of repetitions of consecutive games.
      */
-    public int maxRepeat;
+    @JvmField
+    var maxRepeat = 0
+
     /**
      * Index when sorted by "least count".
      */
-    public int indexLeastCount;
-    /**
-     * TODO comment me!
-     */
-    public int indexMostCount;
-    /**
-     * TODO comment me!
-     */
-    public int indexLeastUsed;
-    /**
-     * TODO comment me!
-     */
-    public int indexMostUsed;
-    /**
-     * TODO comment me!
-     */
-    public int indexLeastRepeat;
-    /**
-     * TODO comment me!
-     */
-    public int indexMostRepeat;
+    @JvmField
+    var indexLeastCount = 0
 
-    public int compareTo(NumberStatistic that) {
-        int comp = (int) ((this.usage - that.usage) * 1e+8);
-        if (comp == 0) {
-            comp = this.id - that.id;
+    /**
+     * TODO comment me!
+     */
+    @JvmField
+    var indexMostCount = 0
+
+    /**
+     * TODO comment me!
+     */
+    @JvmField
+    var indexLeastUsed = 0
+
+    /**
+     * TODO comment me!
+     */
+    @JvmField
+    var indexMostUsed = 0
+
+    /**
+     * TODO comment me!
+     */
+    @JvmField
+    var indexLeastRepeat = 0
+
+    /**
+     * TODO comment me!
+     */
+    @JvmField
+    var indexMostRepeat = 0
+    override fun compareTo(other: NumberStatistic): Int {
+        var c = ((usage - other.usage) * 1e+8).toInt()
+        if (c == 0) {
+            c = id - other.id
         }
-        return comp;
+        return c
     }
 
-    @Override
-    public int hashCode() {
-        return id;
+    override fun hashCode(): Int {
+        return id
     }
 
-    @Override
-    public String toString() {
-        StringBuffer buf = new StringBuffer();
-        buf.append(id);
-        buf.append('\t').append(count);
-        buf.append('\t').append(usage);
-        buf.append('\t').append(repeat);
-        buf.append('\t').append(maxRepeat);
-        return buf.toString();
+    override fun toString(): String {
+        val buf = StringBuilder()
+        buf.append(id)
+        buf.append('\t').append(count)
+        buf.append('\t').append(usage)
+        buf.append('\t').append(repeat)
+        buf.append('\t').append(maxRepeat)
+        return buf.toString()
     }
 }

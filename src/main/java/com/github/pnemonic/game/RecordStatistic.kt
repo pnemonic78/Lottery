@@ -1,34 +1,37 @@
-package com.github.pnemonic.game;
+package com.github.pnemonic.game
 
-import com.github.pnemonic.game.lottery.LotteryRecord;
+import com.github.pnemonic.game.lottery.LotteryRecord
 
-public class RecordStatistic extends Statistic {
-
-    public LotteryRecord record;
+class RecordStatistic(size: Int) : Statistic() {
+    @JvmField
+    var record: LotteryRecord? = null
 
     /**
      * Number of <tt>index + 2</tt> consecutives.
      */
-    public final int[] consecutive;
+    @JvmField
+    val consecutive: IntArray
 
     /**
      * Gap between ball at <tt>index</tt> and ball at <tt>index + 1</tt>.
      */
-    public final int[] gap;
+    @JvmField
+    val gap: IntArray
 
     /**
      * Number of odd-numbered balls.
      */
-    public int odd;
+    @JvmField
+    var odd = 0
+
     /**
      * Number of even-numbered balls.
      */
-    public int even;
+    @JvmField
+    var even = 0
 
-    public RecordStatistic(int size) {
-        super();
-        this.consecutive = new int[size];
-        this.gap = new int[size];
+    init {
+        consecutive = IntArray(size)
+        gap = IntArray(size)
     }
-
 }

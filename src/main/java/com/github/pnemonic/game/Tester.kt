@@ -1,57 +1,55 @@
-package com.github.pnemonic.game;
+package com.github.pnemonic.game
 
-import com.github.pnemonic.game.lottery.Lottery;
-import com.github.pnemonic.game.lottery.LotteryGame;
-import com.github.pnemonic.game.lottery.LotteryRecord;
+import com.github.pnemonic.game.lottery.Lottery
+import com.github.pnemonic.game.lottery.LotteryGame
+import com.github.pnemonic.game.lottery.LotteryRecord
+import java.io.File
+import java.io.IOException
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import java.util.Set;
+abstract class Tester(@JvmField protected val lottery: Lottery) {
+    @JvmField
+    protected val lotterySize: Int = lottery.size
 
-public abstract class Tester {
+    @JvmField
+    protected val lotteryMin: Int = lottery.minimum
 
-    protected final Lottery lottery;
-    protected final int lotterySize;
-    protected final int lotteryMin;
-    protected final int lotteryMax;
-    protected final int numBalls;
+    @JvmField
+    protected val lotteryMax: Int = lottery.maximum
 
-    protected List<LotteryRecord> records;
-    protected int recordsSize;
-    protected int numGamesTotal;
-    protected NumberStatistic[][] numStats;
+    @JvmField
+    protected val numBalls: Int = lottery.numberBalls
 
-    /**
-     * Creates a new tester.
-     */
-    public Tester(Lottery lottery) {
-        super();
-        this.lottery = lottery;
-        this.lotterySize = lottery.size();
-        this.lotteryMin = lottery.getMinimum();
-        this.lotteryMax = lottery.getMaximum();
-        this.numBalls = lottery.getNumberBalls();
-    }
+    @JvmField
+    protected var records: List<LotteryRecord> = emptyList()
 
-    public abstract void parse(File file) throws IOException;
+    @JvmField
+    protected var recordsSize = 0
 
-    public abstract void drive();
+    @JvmField
+    protected var numGamesTotal = 0
 
-    protected abstract void drive(NumberStatisticGrouping grouping, String name);
+    @JvmField
+    protected var numStats: Array<Array<NumberStatistic?>>? = null
 
-    protected Set<LotteryGame> play(int numGames) {
-        Set<LotteryGame> games = lottery.play(numGames);
-        int gamesSize = games.size();
-        int retry = 10;
-        while ((gamesSize < numGames) && (gamesSize > 1)) {
-            games.addAll(lottery.play(numGames - gamesSize));
-            gamesSize = games.size();
-            retry--;
+    @Throws(IOException::class)
+    abstract fun parse(file: File)
+
+    abstract fun drive()
+
+    protected abstract fun drive(grouping: NumberStatisticGrouping, name: String)
+
+    protected fun play(numGames: Int): Set<LotteryGame> {
+        val games = lottery.play(numGames)
+        var gamesSize = games.size
+        var retry = 10
+        while (gamesSize in 2 until numGames) {
+            games.addAll(lottery.play(numGames - gamesSize))
+            gamesSize = games.size
+            retry--
             if (retry == 0) {
-                break;
+                break
             }
         }
-        return games;
+        return games
     }
 }

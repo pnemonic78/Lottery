@@ -163,22 +163,22 @@ class Lotto777Tester : Tester(Lotto777Sub()) {
          * Maximum repeat of same number.
          */
         private const val MAX_REPEAT_THRESHOLD = 8
+    }
+}
 
-        /**
-         * Main method.
-         *
-         * @param args the array of arguments.
-         */
-        fun main(args: Array<String>) {
-            val fileName = if (args.isEmpty()) "results/777.csv" else args[0]
-            val file = File(fileName)
-            val tester = Lotto777Tester()
-            try {
-                tester.parse(file)
-                tester.drive()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
+/**
+ * Main method.
+ *
+ * @param args the array of arguments.
+ */
+fun main(args: Array<String>) {
+    val fileName = if (args.isEmpty()) "results/777.csv" else args[0]
+    val file = File(fileName)
+    val tester = Lotto777Tester()
+    try {
+        tester.parse(file)
+        tester.drive()
+    } catch (e: Exception) {
+        e.printStackTrace()
     }
 }

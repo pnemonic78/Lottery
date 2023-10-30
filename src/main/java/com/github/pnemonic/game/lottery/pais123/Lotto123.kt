@@ -32,26 +32,25 @@ class Lotto123 : Lottery(SIZE) {
         /**
          * Total number of plays per budget.
          */
-        @JvmField
         val PLAYS = floor(BUDGET / COST).toInt()
 
         private const val SIZE = 1
+    }
+}
 
-        /**
-         * Main method.
-         *
-         * @param args the array of arguments.
-         */
-        fun main(args: Array<String>) {
-            val lottery = Lotto123()
-            if (args.isNotEmpty()) {
-                lottery.setCandidates(args[0])
-            }
-            val plays = PLAYS
-            val games = lottery.play(plays)
-            for (game in games) {
-                lottery.print(game)
-            }
-        }
+/**
+ * Main method.
+ *
+ * @param args the array of arguments.
+ */
+fun main(args: Array<String>) {
+    val lottery = Lotto123()
+    if (args.isNotEmpty()) {
+        lottery.setCandidates(args[0])
+    }
+    val plays = Lotto123.PLAYS
+    val games = lottery.play(plays)
+    for (game in games) {
+        lottery.print(game)
     }
 }

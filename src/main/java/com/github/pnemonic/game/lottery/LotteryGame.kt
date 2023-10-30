@@ -6,11 +6,8 @@ package com.github.pnemonic.game.lottery
  * @author Moshe
  */
 class LotteryGame(size: Int) : Comparable<LotteryGame> {
-    @JvmField
     var id = 0
-    @JvmField
     var lot: IntArray = IntArray(size)
-    @JvmField
     var bonus = 0
 
     override fun hashCode(): Int {

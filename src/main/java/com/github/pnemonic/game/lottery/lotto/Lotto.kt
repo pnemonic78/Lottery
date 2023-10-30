@@ -25,7 +25,7 @@ open class Lotto : Lottery(SIZE) {
         if (pickIndex >= 2) {
             val lot = game.lot
             val size = lot.size
-            
+
             val i = pickIndex
             if (lot[i - 2] + 1 == lot[i - 1] && lot[i - 1] + 1 == lot[i]) {
                 // remove 4th consecutive numbers: 1 before; 1 after.
@@ -112,29 +112,28 @@ open class Lotto : Lottery(SIZE) {
         /**
          * Total number of plays per budget. Lotto played in pairs.
          */
-        @JvmField
         val PLAYS = floor(BUDGET / COST).toInt() and 1.inv()
 
         private const val SIZE = 6
         private const val MAX_LOWER = 21
         private const val MIN_UPPER = 13
         private const val MAX_GAP = 28
+    }
+}
 
-        /**
-         * Main method.
-         *
-         * @param args the array of arguments.
-         */
-        fun main(args: Array<String>) {
-            val lottery: Lottery = Lotto()
-            if (args.isNotEmpty()) {
-                lottery.setCandidates(args[0])
-            }
-            val plays = PLAYS
-            val games: Set<LotteryGame> = lottery.play(plays)
-            for (game in games) {
-                lottery.print(game)
-            }
-        }
+/**
+ * Main method.
+ *
+ * @param args the array of arguments.
+ */
+fun main(args: Array<String>) {
+    val lottery: Lottery = Lotto()
+    if (args.isNotEmpty()) {
+        lottery.setCandidates(args[0])
+    }
+    val plays = Lotto.PLAYS
+    val games: Set<LotteryGame> = lottery.play(plays)
+    for (game in games) {
+        lottery.print(game)
     }
 }

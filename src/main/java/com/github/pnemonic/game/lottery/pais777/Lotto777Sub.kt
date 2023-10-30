@@ -1382,22 +1382,22 @@ class Lotto777Sub : Lotto777() {
                 0
             )
         )
+    }
+}
 
-        /**
-         * Main method.
-         *
-         * @param args the array of arguments.
-         */
-        fun main(args: Array<String>) {
-            val lottery: Lottery = Lotto777Sub()
-            if (args.isNotEmpty()) {
-                lottery.setCandidates(args[0])
-            }
-            val plays = PLAYS
-            val games: Set<LotteryGame> = lottery.play(plays)
-            for (game in games) {
-                lottery.print(game)
-            }
-        }
+/**
+ * Main method.
+ *
+ * @param args the array of arguments.
+ */
+fun main(args: Array<String>) {
+    val lottery: Lottery = Lotto777Sub()
+    if (args.isNotEmpty()) {
+        lottery.setCandidates(args[0])
+    }
+    val plays = Lotto777.PLAYS
+    val games: Set<LotteryGame> = lottery.play(plays)
+    for (game in games) {
+        lottery.print(game)
     }
 }

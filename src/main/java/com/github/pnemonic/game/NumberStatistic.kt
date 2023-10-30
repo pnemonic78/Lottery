@@ -4,75 +4,63 @@ class NumberStatistic : Statistic(), Comparable<NumberStatistic> {
     /**
      * The ball value.
      */
-    @JvmField
     var id = 0
 
     /**
      * Number of occurrences of this ball in the game.
      */
-    @JvmField
     var occur = 0
 
     /**
      * Total number of occurrences.
      */
-    @JvmField
     var count = 0
 
     /**
      * Usage (age).
      */
-    @JvmField
     var usage = 0f
 
     /**
-     * Total number of repetitions of consecutive games. Related to
-     * [.usage].
+     * Total number of repetitions of consecutive games. Related to [.usage].
      */
-    @JvmField
     var repeat = 0
 
     /**
      * Maximum number of repetitions of consecutive games.
      */
-    @JvmField
     var maxRepeat = 0
 
     /**
      * Index when sorted by "least count".
      */
-    @JvmField
     var indexLeastCount = 0
 
     /**
      * TODO comment me!
      */
-    @JvmField
     var indexMostCount = 0
 
     /**
      * TODO comment me!
      */
-    @JvmField
     var indexLeastUsed = 0
 
     /**
      * TODO comment me!
      */
-    @JvmField
     var indexMostUsed = 0
 
     /**
      * TODO comment me!
      */
-    @JvmField
     var indexLeastRepeat = 0
 
     /**
      * TODO comment me!
      */
-    @JvmField
     var indexMostRepeat = 0
+
     override fun compareTo(other: NumberStatistic): Int {
         var c = ((usage - other.usage) * 1e+8).toInt()
         if (c == 0) {

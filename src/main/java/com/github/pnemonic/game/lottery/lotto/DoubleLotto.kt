@@ -9,22 +9,21 @@ import kotlin.math.floor
  * @author Moshe
  */
 class DoubleLotto : Lotto() {
-    companion object {
-        /**
-         * Main method.
-         *
-         * @param args the array of arguments.
-         */
-        fun main(args: Array<String>) {
-            val lotto = DoubleLotto()
-            val budget = 100.00
-            val cost = COST * 2 // Double Lotto costs 2x
-            var plays = floor(budget / cost).toInt()
-            plays = plays and 1.inv() // Lotto played in pairs.
-            val games: Set<LotteryGame> = lotto.play(plays)
-            for (game in games) {
-                lotto.print(game)
-            }
-        }
+}
+
+/**
+ * Main method.
+ *
+ * @param args the array of arguments.
+ */
+fun main() {
+    val lotto = DoubleLotto()
+    val budget = 100.00
+    val cost = Lotto.COST * 2 // Double Lotto costs 2x
+    var plays = floor(budget / cost).toInt()
+    plays = plays and 1.inv() // Lotto played in pairs.
+    val games: Set<LotteryGame> = lotto.play(plays)
+    for (game in games) {
+        lotto.print(game)
     }
 }

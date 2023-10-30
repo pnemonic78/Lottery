@@ -44,18 +44,18 @@ class LottoStats(lottery: Lotto) : LotteryStats(lottery, 6) {
     }
 
     companion object {
-        /**
-         * Main method.
-         *
-         * @param args the array of arguments.
-         */
-        fun main(args: Array<String>) {
-            val fileName = if (args.isEmpty()) "results/Lotto.csv" else args[0]
-            val file = File(fileName)
-            val stats = LottoStats(Lotto())
-            stats.parse(file)
-        }
-
         private const val THRESHOLD_CANDIDATES_PERCENT = 50
     }
+}
+
+/**
+ * Main method.
+ *
+ * @param args the array of arguments.
+ */
+fun main(args: Array<String>) {
+    val fileName = if (args.isEmpty()) "results/Lotto.csv" else args[0]
+    val file = File(fileName)
+    val stats = LottoStats(Lotto())
+    stats.parse(file)
 }

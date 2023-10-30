@@ -214,22 +214,22 @@ class Lotto123Tester {
          * Maximum repeat of same number, even though statistically maximum is 9.
          */
         private const val MAX_REPEAT_THRESHOLD = 8
+    }
+}
 
-        /**
-         * Main method.
-         *
-         * @param args the array of arguments.
-         */
-        fun main(args: Array<String>) {
-            val fileName = if (args.isEmpty()) "results/777.csv" else args[0]
-            val file = File(fileName)
-            val tester = Lotto123Tester()
-            try {
-                tester.parse(file)
-                tester.drive()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
+/**
+ * Main method.
+ *
+ * @param args the array of arguments.
+ */
+fun main(args: Array<String>) {
+    val fileName = if (args.isEmpty()) "results/777.csv" else args[0]
+    val file = File(fileName)
+    val tester = Lotto123Tester()
+    try {
+        tester.parse(file)
+        tester.drive()
+    } catch (e: Exception) {
+        e.printStackTrace()
     }
 }

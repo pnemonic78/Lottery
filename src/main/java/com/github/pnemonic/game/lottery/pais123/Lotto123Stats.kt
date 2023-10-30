@@ -28,9 +28,8 @@ class Lotto123Stats(lottery: Lottery) {
      *
      * @return
      */
-    @JvmField
     var numberStatistics: Array<Array<NumberStatistic?>>? = null
-        //FIXME private set
+    //FIXME private set
 
     /**
      * The upper bound of the minimum balls.
@@ -50,7 +49,7 @@ class Lotto123Stats(lottery: Lottery) {
     /**
      * The number of balls.
      */
-    private val numBalls: Int  = lottery.numberBalls
+    private val numBalls: Int = lottery.numberBalls
 
     /**
      * The lowest number of odd balls.
@@ -94,7 +93,6 @@ class Lotto123Stats(lottery: Lottery) {
         }
     }
 
-    @JvmOverloads
     fun processRecords(
         records: List<LotteryRecord>,
         processRecordStatistics: Boolean = true,
@@ -273,18 +271,16 @@ class Lotto123Stats(lottery: Lottery) {
         }
         println(asJava)
     }
+}
 
-    companion object {
-        /**
-         * Main method.
-         *
-         * @param args the array of arguments.
-         */
-        fun main(args: Array<String>) {
-            val fileName = if (args.isEmpty()) "results/123.csv" else args[0]
-            val file = File(fileName)
-            val stats = Lotto123Stats(Lotto123())
-            stats.parse(file)
-        }
-    }
+/**
+ * Main method.
+ *
+ * @param args the array of arguments.
+ */
+fun main(args: Array<String>) {
+    val fileName = if (args.isEmpty()) "results/123.csv" else args[0]
+    val file = File(fileName)
+    val stats = Lotto123Stats(Lotto123())
+    stats.parse(file)
 }

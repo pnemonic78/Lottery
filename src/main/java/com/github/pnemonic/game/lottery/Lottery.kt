@@ -9,7 +9,7 @@ import kotlin.random.Random
  *
  * @author Moshe
  */
-abstract class Lottery(@JvmField val size: Int) {
+abstract class Lottery(val size: Int) {
     private val candidates: MutableSet<Int> = TreeSet()
 
     /**

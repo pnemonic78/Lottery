@@ -11,17 +11,13 @@ import kotlin.math.max
 import kotlin.math.min
 
 abstract class LotteryStats(
-    @JvmField
     protected val lottery: Lottery,
     /**
      * The number of balls per record.
      */
-    @JvmField
     protected val numRecordBalls: Int
 ) {
-    @JvmField
     protected var records: List<LotteryRecord>? = null
-    @JvmField
     protected val recStats: MutableList<RecordStatistic> = ArrayList()
 
     /**
@@ -30,72 +26,59 @@ abstract class LotteryStats(
      *
      * @return
      */
-    @JvmField
     var numStats: Array<Array<NumberStatistic?>>? = null
     //FIXME protected set
 
     /**
      * The upper bound of the minimum balls.
      */
-    @JvmField
     protected var maxLower = 0
 
     /**
      * The lower bound of the maximum balls.
      */
-    @JvmField
     protected var minUpper = 0
 
     /**
      * The widest gap between any 2 balls.
      */
-    @JvmField
     protected var maxGap = 0
-    @JvmField
     protected val lotteryMin: Int = lottery.minimum
-    @JvmField
     protected val lotteryMax: Int = lottery.maximum
 
     /**
      * The number of balls.
      */
-    @JvmField
     protected val numBalls: Int = lottery.numberBalls
 
     /**
      * The lowest number of odd balls.
      */
-    @JvmField
     protected var minOdd = 0
 
     /**
      * The lowest number of even balls.
      */
-    @JvmField
     protected var minEven = 0
 
     /**
      * The highest number of odd balls.
      */
-    @JvmField
     protected var maxOdd = 0
 
     /**
      * The highest number of even balls.
      */
-    @JvmField
     protected var maxEven = 0
 
     /**
      * The highest number of repeated balls.
      */
-    @JvmField
     protected var maxRepeat = 0
 
     /**
      * The number of occurrences of pairs.
      */
-    @JvmField
     protected var numPairs: Array<IntArray>? = null
 
     protected abstract fun createResultsReader(): LotteryResultsReader
@@ -112,7 +95,6 @@ abstract class LotteryStats(
         }
     }
 
-    @JvmOverloads
     fun processRecords(
         records: List<LotteryRecord>,
         processRecordStatistics: Boolean = true,

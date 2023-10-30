@@ -168,23 +168,22 @@ class LottoTester : Tester(Lotto()) {
          * Maximum repeat of same number.
          */
         private const val MAX_REPEAT_THRESHOLD = 8
+    }
+}
 
-        /**
-         * Main method.
-         *
-         * @param args the array of arguments.
-         */
-        @JvmStatic
-        fun main(args: Array<String>) {
-            val fileName = if (args.isEmpty()) "results/Lotto.csv" else args[0]
-            val file = File(fileName)
-            val tester = LottoTester()
-            try {
-                tester.parse(file)
-                tester.drive()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
+/**
+ * Main method.
+ *
+ * @param args the array of arguments.
+ */
+fun main(args: Array<String>) {
+    val fileName = if (args.isEmpty()) "results/Lotto.csv" else args[0]
+    val file = File(fileName)
+    val tester = LottoTester()
+    try {
+        tester.parse(file)
+        tester.drive()
+    } catch (e: Exception) {
+        e.printStackTrace()
     }
 }

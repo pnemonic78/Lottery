@@ -59,17 +59,17 @@ class Lotto777Stats(lottery: Lottery) : LotteryStats(lottery, 17) {
 
     companion object {
         private const val THRESHOLD_CANDIDATES_PERCENT = 50
-
-        /**
-         * Main method.
-         *
-         * @param args the array of arguments.
-         */
-        fun main(args: Array<String>) {
-            val fileName = if (args.isEmpty()) "results/777.csv" else args[0]
-            val file = File(fileName)
-            val stats = Lotto777Stats(Lotto777())
-            stats.parse(file)
-        }
     }
+}
+
+/**
+ * Main method.
+ *
+ * @param args the array of arguments.
+ */
+fun main(args: Array<String>) {
+    val fileName = if (args.isEmpty()) "results/777.csv" else args[0]
+    val file = File(fileName)
+    val stats = Lotto777Stats(Lotto777())
+    stats.parse(file)
 }

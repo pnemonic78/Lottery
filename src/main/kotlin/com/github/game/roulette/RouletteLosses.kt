@@ -42,12 +42,9 @@ class RouletteLosses {
         println("max loss sequence: ${stats111.maxSequenceLosses}")
         println("profit: ${stats111.profit}")
     }
+}
 
-    companion object {
-        @JvmStatic
-        fun main(args: Array<String>) {
-            RouletteLosses().run()
-        }
-    }
+fun main() {
+    RouletteLosses().run()
 }
 

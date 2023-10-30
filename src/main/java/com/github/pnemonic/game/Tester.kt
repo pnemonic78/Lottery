@@ -6,29 +6,21 @@ import com.github.pnemonic.game.lottery.LotteryRecord
 import java.io.File
 import java.io.IOException
 
-abstract class Tester(@JvmField protected val lottery: Lottery) {
-    @JvmField
+abstract class Tester(protected val lottery: Lottery) {
     protected val lotterySize: Int = lottery.size
 
-    @JvmField
     protected val lotteryMin: Int = lottery.minimum
 
-    @JvmField
     protected val lotteryMax: Int = lottery.maximum
 
-    @JvmField
     protected val numBalls: Int = lottery.numberBalls
 
-    @JvmField
     protected var records: List<LotteryRecord> = emptyList()
 
-    @JvmField
     protected var recordsSize = 0
 
-    @JvmField
     protected var numGamesTotal = 0
 
-    @JvmField
     protected var numStats: Array<Array<NumberStatistic?>>? = null
 
     @Throws(IOException::class)

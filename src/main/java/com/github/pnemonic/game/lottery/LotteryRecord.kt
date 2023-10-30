@@ -5,17 +5,13 @@ import java.text.SimpleDateFormat
 import java.util.Arrays
 import java.util.Calendar
 
-class LotteryRecord @JvmOverloads constructor(
+class LotteryRecord(
     lottery: Lottery?,
     size: Int = lottery?.size ?: 0
 ) : Comparable<LotteryRecord> {
-    @JvmField
     var id = 0
-    @JvmField
     var date: Calendar? = null
-    @JvmField
     val lot: IntArray = IntArray(size)
-    @JvmField
     var bonus = 0
 
     private val bonusMin: Int = lottery?.bonusMinimum ?: 0

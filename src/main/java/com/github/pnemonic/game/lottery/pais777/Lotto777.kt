@@ -105,21 +105,21 @@ open class Lotto777 : Lottery(SIZE) {
         private const val MAX_GAP = 32
         private const val MIN_ODD = 2
         private const val MIN_EVEN = 2
+    }
+}
 
-        /**
-         * Main method.
-         *
-         * @param args the array of arguments.
-         */
-        fun main(args: Array<String>) {
-            val lottery: Lottery = Lotto777()
-            if (args.isNotEmpty()) {
-                lottery.setCandidates(args[0])
-            }
-            val games: Set<LotteryGame> = lottery.play(PLAYS)
-            for (game in games) {
-                lottery.print(game)
-            }
-        }
+/**
+ * Main method.
+ *
+ * @param args the array of arguments.
+ */
+fun main(args: Array<String>) {
+    val lottery: Lottery = Lotto777()
+    if (args.isNotEmpty()) {
+        lottery.setCandidates(args[0])
+    }
+    val games: Set<LotteryGame> = lottery.play(Lotto777.PLAYS)
+    for (game in games) {
+        lottery.print(game)
     }
 }

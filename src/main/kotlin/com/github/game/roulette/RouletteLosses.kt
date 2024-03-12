@@ -8,6 +8,7 @@ class RouletteLosses {
         val game1221 = Roulette1221()
         val game222 = Roulette222()
         val game111 = Roulette111()
+        val game5 = Roulette5()
         val nextLikely = NextLikely()
         val rnd = Random.Default
         val balls = IntArray(37)
@@ -19,6 +20,7 @@ class RouletteLosses {
             game1221.play(ball)
             game222.play(ball)
             game111.play(ball)
+            game5.play(ball)
             nextLikely.play(ball)
         }
 
@@ -51,6 +53,13 @@ class RouletteLosses {
         println("grouped losses: ${stats111.sequenceLosses.contentToString()}")
         println("max loss sequence: ${stats111.maxSequenceLosses}")
         println("profit: ${stats111.profit}")
+
+        val stats5 = game5.getStatistics()
+        println()
+        println("5 lines:")
+        println("grouped losses: ${stats5.sequenceLosses.contentToString()}")
+        println("max loss sequence: ${stats5.maxSequenceLosses}")
+        println("profit: ${stats5.profit}")
 
         println()
         println("next likely:")

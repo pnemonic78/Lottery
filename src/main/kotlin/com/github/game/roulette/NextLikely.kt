@@ -49,12 +49,12 @@ class NextLikely : RouletteGame() {
             counts[dozen] = (counts[dozen] ?: 0) + 1
         }
 
-        wallet -= (bet * 2)
+        wallet -= bet * 2
         val win = (ball in dozen1) || (ball in dozen2)
         if (win) {
             lossesGrouped[lossCount]++
             lossCount = 0
-            wallet += (bet * 3)
+            wallet += bet * 3
             bet = 1
         } else {
             lossCount++

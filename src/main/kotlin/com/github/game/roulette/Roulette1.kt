@@ -14,12 +14,12 @@ class Roulette1 : RouletteGame() {
     private var bet = 1
 
     override fun play(ball: Int) {
-        wallet -= (bet * 2)
+        wallet -= bet * 4
         val win = (ball in dozen1) || (ball in dozen2)
         if (win) {
             lossesGrouped[lossCount]++
             lossCount = 0
-            wallet += (bet * 3)
+            wallet += bet * 6
             bet = 1
         } else {
             lossCount++

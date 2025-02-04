@@ -1,7 +1,7 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-    kotlin("jvm") version "1.8.20"
+    kotlin("jvm") version "2.0.0"
     application
 }
 
@@ -13,7 +13,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.opencsv:opencsv:5.8")
+    implementation("com.opencsv:opencsv:5.10")
 
     testImplementation(kotlin("test"))
 }
@@ -22,8 +22,10 @@ tasks.test {
     useJUnitPlatform()
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = JavaVersion.VERSION_17.toString()
+kotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_21
+    }
 }
 
 application {

@@ -4,11 +4,9 @@ import com.github.pnemonic.csv.CSVFile
 import com.github.pnemonic.csv.CSVLine
 import com.github.pnemonic.game.lottery.LotteryRecord
 import com.github.pnemonic.game.lottery.LotteryResultsReader
-import com.github.pnemonic.game.lottery.pais123.Lotto123ResultsReader
 import java.io.IOException
 import java.io.InputStream
 import java.text.DateFormat
-import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
 
@@ -31,13 +29,10 @@ class LottoResultsReader : LotteryResultsReader() {
             columns = getCleanColumns(line)
 
             record.id = columns[COLUMN_SEQ].toInt()
-            record.date = Calendar.getInstance()
-            try {
-                record.date!!.time = format.parse(columns[COLUMN_DATE])
-            } catch (e: ParseException) {
-                // ignore date
+            record.date = Calendar.getInstance().apply {
+                time = format.parse(columns[COLUMN_DATE])
+                set(Calendar.HOUR, 23)
             }
-            record.date!!.set(Calendar.HOUR, 23)
             var col = COLUMN_BALL
             for (l in 0 until NUM_BALLS) {
                 record.lot[l] = columns[col++].toInt()

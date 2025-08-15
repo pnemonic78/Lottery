@@ -43,16 +43,16 @@ class LottoResultsReader : LotteryResultsReader() {
                 record.lot[l] = columns[col++].toInt()
             }
             record.bonus = columns[col].toInt()
-            if (record.lot[5] > 37) {
-                break
-            }
-            if (record.bonus > 10) {
-                break
-            }
+//            if (record.balls[5] > 37) {
+//                break
+//            }
+//            if (record.bonus > 10) {
+//                break
+//            }
             addRecord(records, record)
         }
         csv.close()
-        return records
+        return records.sortedBy { it.id }
     }
 
     private fun addRecord(records: MutableList<LotteryRecord>, record: LotteryRecord) {

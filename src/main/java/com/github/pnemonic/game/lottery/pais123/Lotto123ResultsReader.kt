@@ -2,13 +2,11 @@ package com.github.pnemonic.game.lottery.pais123
 
 import com.github.pnemonic.csv.CSVFile
 import com.github.pnemonic.csv.CSVLine
-import com.github.pnemonic.game.lottery.Lottery
 import com.github.pnemonic.game.lottery.LotteryRecord
 import com.github.pnemonic.game.lottery.LotteryResultsReader
 import java.io.IOException
 import java.io.InputStream
 import java.text.DateFormat
-import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
 
@@ -20,32 +18,29 @@ class Lotto123ResultsReader : LotteryResultsReader() {
         val lines = csv.iterator()
         var line: CSVLine
         var columns: Array<String>
-        val lottery: Lottery = Lotto123()
         var record: LotteryRecord
-        val format: DateFormat = SimpleDateFormat("dd/MM/yy")
+        val format: DateFormat = SimpleDateFormat("dd/MM/yyyy")
+        val numBalls = NUM_BALLS
 
         // ignore header
         lines.next()
         while (lines.hasNext()) {
             line = lines.next()
-            record = LotteryRecord(lottery, NUM_BALLS)
+            record = LotteryRecord(numBalls)
             columns = getCleanColumns(line)
 
             record.id = columns[COLUMN_SEQ].toInt()
-            record.date = Calendar.getInstance()
-            try {
-                record.date!!.time = format.parse(columns[COLUMN_DATE])
-            } catch (e: ParseException) {
-                // ignore date
+            record.date = Calendar.getInstance().apply {
+                time = format.parse(columns[COLUMN_DATE])
             }
             var col = COLUMN_BALL
-            for (l in 0 until NUM_BALLS) {
+            for (l in 0 until numBalls) {
                 record.lot[l] = columns[col--].toInt()
             }
             addRecord(records, record)
         }
         csv.close()
-        return records
+        return records.sortedBy { it.id }
     }
 
     private fun addRecord(records: MutableList<LotteryRecord>, record: LotteryRecord) {

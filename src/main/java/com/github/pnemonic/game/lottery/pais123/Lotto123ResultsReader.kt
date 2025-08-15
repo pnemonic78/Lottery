@@ -15,7 +15,7 @@ import java.util.Calendar
 class Lotto123ResultsReader : LotteryResultsReader() {
     @Throws(IOException::class)
     override fun parse(input: InputStream): List<LotteryRecord> {
-        val records: MutableList<LotteryRecord> = ArrayList()
+        val records = mutableListOf<LotteryRecord>()
         val csv = CSVFile(input)
         val lines = csv.iterator()
         var line: CSVLine

@@ -8,6 +8,7 @@ import com.github.pnemonic.game.RecordStatistic
 import com.github.pnemonic.game.lottery.Lottery
 import com.github.pnemonic.game.lottery.LotteryRecord
 import com.github.pnemonic.game.lottery.LotteryResultsReader
+import com.github.pnemonic.isEven
 import java.io.File
 import java.util.Arrays
 import kotlin.math.max
@@ -20,7 +21,7 @@ import kotlin.math.min
  */
 class Lotto123Stats(lottery: Lottery) {
     private var records: List<LotteryRecord>? = null
-    private val recStats: MutableList<RecordStatistic> = ArrayList()
+    private val recStats = mutableListOf<RecordStatistic>()
 
     /**
      * Get the number statistics. Each row represents a game. Each column
@@ -212,7 +213,7 @@ class Lotto123Stats(lottery: Lottery) {
             var j1 = j + 1
             var s = 0
             while (c && j1 < size) {
-                c = c and con[j]
+                c = c && con[j]
                 rstat.consecutive[s] += if (c) 1 else 0
                 j++
                 j1++
@@ -221,7 +222,7 @@ class Lotto123Stats(lottery: Lottery) {
             i++
         }
         for (ball in record.lot) {
-            if (ball and 1 == 0) {
+            if (ball.isEven) {
                 rstat.even++
             } else {
                 rstat.odd++

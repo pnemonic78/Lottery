@@ -3,6 +3,7 @@ package com.github.pnemonic.game.lottery.pais777
 import com.github.pnemonic.game.lottery.LotException
 import com.github.pnemonic.game.lottery.Lottery
 import com.github.pnemonic.game.lottery.LotteryGame
+import com.github.pnemonic.isEven
 
 /**
  * Choose numbers for 777 for Israel - balls 1 to 35.
@@ -44,7 +45,7 @@ class Lotto777Sub : Lotto777() {
         var countOdd = 0
         var countEven = 0
         for (l in lot) {
-            if (l and 1 == 0) {
+            if (l.isEven) {
                 countEven++
             } else {
                 countOdd++

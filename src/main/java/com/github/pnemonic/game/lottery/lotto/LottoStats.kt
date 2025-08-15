@@ -29,10 +29,9 @@ class LottoStats(lottery: Lotto) : LotteryStats(lottery, 6) {
             val nstat = nr!!
             println(nstat)
             add = nstat.id >= lotteryMin && nstat.id <= lotteryMax
-            add = add and (nstat.repeat < maxRepeat)
+            add = add && (nstat.repeat < maxRepeat)
             // Copy from Tester#nextCandidates and paste here:
-            add =
-                add and (nstat.indexLeastCount < thresholdCandidatesAnd && nstat.indexMostUsed < thresholdCandidatesAnd)
+            add = add && (nstat.indexLeastCount < thresholdCandidatesAnd && nstat.indexMostUsed < thresholdCandidatesAnd)
             if (add) {
                 if (asJava.isNotEmpty()) {
                     asJava.append(',')

@@ -16,14 +16,14 @@ import java.util.Date
 class Lotto777ResultsReader : LotteryResultsReader() {
     @Throws(IOException::class)
     override fun parse(input: InputStream): List<LotteryRecord> {
-        val records: MutableList<LotteryRecord> = ArrayList()
+        val records = mutableListOf<LotteryRecord>()
         val csv = CSVFile(input)
         val lines = csv.iterator()
         var line: CSVLine
         var columns: Array<String>
         val lottery: Lottery = Lotto777()
         var record: LotteryRecord
-        val format: DateFormat = SimpleDateFormat("dd/MM/yy")
+        val format: DateFormat = SimpleDateFormat("dd/MM/yyyy")
 
         // ignore header
         lines.next()

@@ -165,7 +165,7 @@ abstract class Lottery(val size: Int) {
 
     protected fun playBonus(game: LotteryGame) {
         if (bonusMinimum < bonusMaximum) {
-            val bag: MutableList<Int> = ArrayList()
+            val bag = mutableListOf<Int>()
             for (n in bonusMinimum..bonusMaximum) {
                 bag.add(n)
             }

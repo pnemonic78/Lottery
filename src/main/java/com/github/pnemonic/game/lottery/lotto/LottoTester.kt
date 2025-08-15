@@ -44,7 +44,7 @@ class LottoTester : Tester(Lotto()) {
         try {
             stats.processRecords(records)
             numStats = stats.numStats
-            for (grouping in NumberStatisticGrouping.values()) {
+            for (grouping in NumberStatisticGrouping.entries) {
                 drive(grouping, grouping.name)
             }
         } catch (e: Exception) {
@@ -90,68 +90,68 @@ class LottoTester : Tester(Lotto()) {
             add = nstat.repeat < MAX_REPEAT_THRESHOLD
             when (grouping) {
                 NumberStatisticGrouping.REGULAR -> {}
-                NumberStatisticGrouping.LEAST_REPEAT -> add =
-                    add and (nstat.indexLeastRepeat < thresholdCandidates)
+                NumberStatisticGrouping.LEAST_REPEAT ->
+                    add = add && (nstat.indexLeastRepeat < thresholdCandidates)
 
-                NumberStatisticGrouping.MOST_REPEAT -> add =
-                    add and (nstat.indexMostRepeat < thresholdCandidates)
+                NumberStatisticGrouping.MOST_REPEAT ->
+                    add = add && (nstat.indexMostRepeat < thresholdCandidates)
 
-                NumberStatisticGrouping.LC -> add =
-                    add and (nstat.indexLeastCount < thresholdCandidates)
+                NumberStatisticGrouping.LC ->
+                    add = add && (nstat.indexLeastCount < thresholdCandidates)
 
-                NumberStatisticGrouping.LU -> add =
-                    add and (nstat.indexLeastUsed < thresholdCandidates)
+                NumberStatisticGrouping.LU ->
+                    add = add && (nstat.indexLeastUsed < thresholdCandidates)
 
-                NumberStatisticGrouping.LU_LC -> add =
-                    add and (nstat.indexLeastUsed < thresholdCandidatesOr || nstat.indexLeastCount < thresholdCandidatesOr)
+                NumberStatisticGrouping.LU_LC ->
+                    add = add && (nstat.indexLeastUsed < thresholdCandidatesOr || nstat.indexLeastCount < thresholdCandidatesOr)
 
-                NumberStatisticGrouping.LU_MC -> add =
-                    add and (nstat.indexLeastUsed < thresholdCandidatesOr || nstat.indexMostCount < thresholdCandidatesOr)
+                NumberStatisticGrouping.LU_MC ->
+                    add = add && (nstat.indexLeastUsed < thresholdCandidatesOr || nstat.indexMostCount < thresholdCandidatesOr)
 
-                NumberStatisticGrouping.LU_MC_LC -> add =
-                    add and (nstat.indexLeastUsed < thresholdCandidatesOr3 || nstat.indexMostCount < thresholdCandidatesOr3 || nstat.indexLeastCount < thresholdCandidatesOr3)
+                NumberStatisticGrouping.LU_MC_LC ->
+                    add = add && (nstat.indexLeastUsed < thresholdCandidatesOr3 || nstat.indexMostCount < thresholdCandidatesOr3 || nstat.indexLeastCount < thresholdCandidatesOr3)
 
-                NumberStatisticGrouping.MC -> add =
-                    add and (nstat.indexMostCount < thresholdCandidates)
+                NumberStatisticGrouping.MC ->
+                    add = add && (nstat.indexMostCount < thresholdCandidates)
 
-                NumberStatisticGrouping.MC_LC -> add =
-                    add and (nstat.indexMostCount < thresholdCandidatesOr || nstat.indexLeastCount < thresholdCandidatesOr)
+                NumberStatisticGrouping.MC_LC ->
+                    add = add && (nstat.indexMostCount < thresholdCandidatesOr || nstat.indexLeastCount < thresholdCandidatesOr)
 
-                NumberStatisticGrouping.MU -> add =
-                    add and (nstat.indexMostUsed < thresholdCandidates)
+                NumberStatisticGrouping.MU ->
+                    add = add && (nstat.indexMostUsed < thresholdCandidates)
 
-                NumberStatisticGrouping.MU_LC -> add =
-                    add and (nstat.indexMostUsed < thresholdCandidatesOr || nstat.indexLeastCount < thresholdCandidatesOr)
+                NumberStatisticGrouping.MU_LC ->
+                    add = add && (nstat.indexMostUsed < thresholdCandidatesOr || nstat.indexLeastCount < thresholdCandidatesOr)
 
-                NumberStatisticGrouping.MU_LU -> add =
-                    add and (nstat.indexMostUsed < thresholdCandidatesOr || nstat.indexLeastUsed < thresholdCandidatesOr)
+                NumberStatisticGrouping.MU_LU ->
+                    add = add && (nstat.indexMostUsed < thresholdCandidatesOr || nstat.indexLeastUsed < thresholdCandidatesOr)
 
-                NumberStatisticGrouping.MU_LU_LC -> add =
-                    add and (nstat.indexMostUsed < thresholdCandidatesOr3 || nstat.indexLeastUsed < thresholdCandidatesOr3 || nstat.indexLeastCount < thresholdCandidatesOr3)
+                NumberStatisticGrouping.MU_LU_LC ->
+                    add = add && (nstat.indexMostUsed < thresholdCandidatesOr3 || nstat.indexLeastUsed < thresholdCandidatesOr3 || nstat.indexLeastCount < thresholdCandidatesOr3)
 
-                NumberStatisticGrouping.MU_LU_MC -> add =
-                    add and (nstat.indexMostUsed < thresholdCandidatesOr3 || nstat.indexLeastUsed < thresholdCandidatesOr3 || nstat.indexMostCount < thresholdCandidatesOr3)
+                NumberStatisticGrouping.MU_LU_MC ->
+                    add = add && (nstat.indexMostUsed < thresholdCandidatesOr3 || nstat.indexLeastUsed < thresholdCandidatesOr3 || nstat.indexMostCount < thresholdCandidatesOr3)
 
-                NumberStatisticGrouping.MU_LU_MC_LC -> add =
-                    add and (nstat.indexMostUsed < thresholdCandidatesOr4 || nstat.indexLeastUsed < thresholdCandidatesOr4 || nstat.indexMostCount < thresholdCandidatesOr4 || nstat.indexLeastCount < thresholdCandidatesOr4)
+                NumberStatisticGrouping.MU_LU_MC_LC ->
+                    add = add && (nstat.indexMostUsed < thresholdCandidatesOr4 || nstat.indexLeastUsed < thresholdCandidatesOr4 || nstat.indexMostCount < thresholdCandidatesOr4 || nstat.indexLeastCount < thresholdCandidatesOr4)
 
-                NumberStatisticGrouping.MU_MC -> add =
-                    add and (nstat.indexMostUsed < thresholdCandidatesOr || nstat.indexMostCount < thresholdCandidatesOr)
+                NumberStatisticGrouping.MU_MC ->
+                    add = add && (nstat.indexMostUsed < thresholdCandidatesOr || nstat.indexMostCount < thresholdCandidatesOr)
 
-                NumberStatisticGrouping.MU_MC_LC -> add =
-                    add and (nstat.indexMostUsed < thresholdCandidatesOr3 || nstat.indexMostCount < thresholdCandidatesOr3 || nstat.indexLeastCount < thresholdCandidatesOr3)
+                NumberStatisticGrouping.MU_MC_LC ->
+                    add = add && (nstat.indexMostUsed < thresholdCandidatesOr3 || nstat.indexMostCount < thresholdCandidatesOr3 || nstat.indexLeastCount < thresholdCandidatesOr3)
 
-                NumberStatisticGrouping.LC_AND_LU -> add =
-                    add and (nstat.indexLeastCount < thresholdCandidatesAnd && nstat.indexLeastUsed < thresholdCandidatesAnd)
+                NumberStatisticGrouping.LC_AND_LU ->
+                    add = add && (nstat.indexLeastCount < thresholdCandidatesAnd && nstat.indexLeastUsed < thresholdCandidatesAnd)
 
-                NumberStatisticGrouping.LC_AND_MU -> add =
-                    add and (nstat.indexLeastCount < thresholdCandidatesAnd && nstat.indexMostUsed < thresholdCandidatesAnd)
+                NumberStatisticGrouping.LC_AND_MU ->
+                    add = add && (nstat.indexLeastCount < thresholdCandidatesAnd && nstat.indexMostUsed < thresholdCandidatesAnd)
 
-                NumberStatisticGrouping.MC_AND_LU -> add =
-                    add and (nstat.indexMostCount < thresholdCandidatesAnd && nstat.indexLeastUsed < thresholdCandidatesAnd)
+                NumberStatisticGrouping.MC_AND_LU ->
+                    add = add && (nstat.indexMostCount < thresholdCandidatesAnd && nstat.indexLeastUsed < thresholdCandidatesAnd)
 
-                NumberStatisticGrouping.MC_AND_MU -> add =
-                    add and (nstat.indexMostCount < thresholdCandidatesAnd && nstat.indexMostUsed < thresholdCandidatesAnd)
+                NumberStatisticGrouping.MC_AND_MU ->
+                    add = add && (nstat.indexMostCount < thresholdCandidatesAnd && nstat.indexMostUsed < thresholdCandidatesAnd)
             }
             if (add) {
                 candidates.add(nstat.id)

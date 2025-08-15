@@ -3,6 +3,7 @@ package com.github.pnemonic.game.lottery.pais777
 import com.github.pnemonic.game.lottery.LotException
 import com.github.pnemonic.game.lottery.Lottery
 import com.github.pnemonic.game.lottery.LotteryGame
+import com.github.pnemonic.isEven
 import kotlin.math.floor
 
 /**
@@ -65,7 +66,7 @@ open class Lotto777 : Lottery(SIZE) {
         var countOdd = 0
         var countEven = 0
         for (l in lot) {
-            if (l and 1 == 0) {
+            if (l.isEven) {
                 countEven++
             } else {
                 countOdd++

@@ -169,32 +169,42 @@ class Lotto123Tester {
             val nstat = nr!!
             add = nstat.repeat < MAX_REPEAT_THRESHOLD
             when (comparator) {
-                CompareBy.LEAST_COUNT -> add = add and (nstat.indexLeastCount < thresholdCandidates)
-                CompareBy.LEAST_REPEAT -> add =
-                    add and (nstat.indexLeastRepeat < thresholdCandidates)
+                CompareBy.LEAST_COUNT ->
+                    add = add && (nstat.indexLeastCount < thresholdCandidates)
 
-                CompareBy.LEAST_USED -> add = add and (nstat.indexLeastUsed < thresholdCandidates)
-                CompareBy.MOST_COUNT -> add = add and (nstat.indexMostCount < thresholdCandidates)
-                CompareBy.MOST_REPEAT -> add = add and (nstat.indexMostRepeat < thresholdCandidates)
-                CompareBy.MOST_USED -> add = add and (nstat.indexMostUsed < thresholdCandidates)
+                CompareBy.LEAST_REPEAT ->
+                    add = add && (nstat.indexLeastRepeat < thresholdCandidates)
+
+                CompareBy.LEAST_USED ->
+                    add = add && (nstat.indexLeastUsed < thresholdCandidates)
+
+                CompareBy.MOST_COUNT ->
+                    add = add && (nstat.indexMostCount < thresholdCandidates)
+
+                CompareBy.MOST_REPEAT ->
+                    add = add && (nstat.indexMostRepeat < thresholdCandidates)
+
+                CompareBy.MOST_USED ->
+                    add = add && (nstat.indexMostUsed < thresholdCandidates)
+
                 CompareBy.LEAST_COUNT_LEAST_USED -> {
-                    add = add and (nstat.indexLeastCount < thresholdCandidates)
-                    add = add and (nstat.indexLeastUsed < thresholdCandidates)
+                    add = add && (nstat.indexLeastCount < thresholdCandidates)
+                    add = add && (nstat.indexLeastUsed < thresholdCandidates)
                 }
 
                 CompareBy.LEAST_COUNT_MOST_USED -> {
-                    add = add and (nstat.indexLeastCount < thresholdCandidates)
-                    add = add and (nstat.indexMostUsed < thresholdCandidates)
+                    add = add && (nstat.indexLeastCount < thresholdCandidates)
+                    add = add && (nstat.indexMostUsed < thresholdCandidates)
                 }
 
                 CompareBy.MOST_COUNT_LEAST_USED -> {
-                    add = add and (nstat.indexMostCount < thresholdCandidates)
-                    add = add and (nstat.indexLeastUsed < thresholdCandidates)
+                    add = add && (nstat.indexMostCount < thresholdCandidates)
+                    add = add && (nstat.indexLeastUsed < thresholdCandidates)
                 }
 
                 CompareBy.MOST_COUNT_MOST_USED -> {
-                    add = add and (nstat.indexMostCount < thresholdCandidates)
-                    add = add and (nstat.indexMostUsed < thresholdCandidates)
+                    add = add && (nstat.indexMostCount < thresholdCandidates)
+                    add = add && (nstat.indexMostUsed < thresholdCandidates)
                 }
 
                 else -> Unit

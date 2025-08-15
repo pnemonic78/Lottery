@@ -12,8 +12,6 @@ import kotlin.math.min
 
 /**
  * Test various strategies for "Lotto".
- *
- * @author moshew
  */
 class LottoTester : Tester(Lotto()) {
     private val thresholdCandidates: Int = numBalls * THRESHOLD_CANDIDATES_PERCENT / 100

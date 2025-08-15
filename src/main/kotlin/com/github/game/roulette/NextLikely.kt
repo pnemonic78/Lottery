@@ -1,17 +1,16 @@
 package com.github.game.roulette
 
 import java.io.PrintStream
-import java.util.TreeMap
 import kotlin.math.max
 import kotlin.math.min
 
 class NextLikely : RouletteGame() {
 
     // Map<previous, Map<next, count>>
-    private val nextCounts = TreeMap<Int, MutableMap<Int, Int>>()
+    private val nextCounts = mutableMapOf<Int, MutableMap<Int, Int>>()
 
     // Map<previous, Map<next_dozen, count>>
-    private val nextDozens = TreeMap<Int, MutableMap<Int, Int>>()
+    private val nextDozens = mutableMapOf<Int, MutableMap<Int, Int>>()
     private var previous = -1
     private val stats = RouletteStats()
 
@@ -30,14 +29,14 @@ class NextLikely : RouletteGame() {
         if (ball != 0) {
             var counts: MutableMap<Int, Int>? = nextCounts[previous]
             if (counts == null) {
-                counts = TreeMap()
+                counts = mutableMapOf()
                 nextCounts[previous] = counts
             }
             counts[ball] = (counts[ball] ?: 0) + 1
 
             counts = nextDozens[previous]
             if (counts == null) {
-                counts = TreeMap()
+                counts = mutableMapOf()
                 nextDozens[previous] = counts
             }
             val dozen = when (ball) {

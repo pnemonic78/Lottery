@@ -7,12 +7,9 @@ import com.github.pnemonic.isEven
 
 /**
  * Choose numbers for 777 for Israel - balls 1 to 35.
- *
- * @author Moshe
  */
 class Lotto777Sub : Lotto777() {
     override val minimum: Int = MINIMUM
-
     override val maximum: Int = 35
 
     @Throws(GameException::class)

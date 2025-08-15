@@ -11,8 +11,6 @@ import kotlin.math.min
 
 /**
  * Test various strategies for "777".
- *
- * @author moshew
  */
 class Lotto777Tester : Tester(Lotto777Sub()) {
     private val thresholdCandidates: Int = numBalls * THRESHOLD_CANDIDATES_PERCENT / 100

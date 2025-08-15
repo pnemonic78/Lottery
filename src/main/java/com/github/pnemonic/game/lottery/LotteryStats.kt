@@ -7,7 +7,6 @@ import com.github.pnemonic.game.NumberStatistic
 import com.github.pnemonic.game.RecordStatistic
 import com.github.pnemonic.isEven
 import java.io.File
-import java.util.Arrays
 import kotlin.math.max
 import kotlin.math.min
 
@@ -215,8 +214,8 @@ abstract class LotteryStats(
                         n++
                     }
                 }
-                System.arraycopy(numStatsRow, 0, numStatsRowSorted, 0, numBalls)
-                Arrays.sort(numStatsRowSorted, forLeastCount)
+                numStatsRow.copyInto(numStatsRowSorted, 0, 0, numBalls)
+                numStatsRowSorted.sortWith(forLeastCount)
                 col = 0
                 run {
                     var n = 1
@@ -228,7 +227,7 @@ abstract class LotteryStats(
                         n++
                     }
                 }
-                Arrays.sort(numStatsRowSorted, forLeastUsed)
+                numStatsRowSorted.sortWith(forLeastUsed)
                 col = 0
                 var n = 1
                 while (n <= numBalls) {
@@ -303,10 +302,10 @@ abstract class LotteryStats(
         for (rstat in recStats) {
             print(rstat.record!!.id)
             for (c in rstat.consecutive) {
-                print("\t" + c)
+                print("\t$c")
             }
-            print("\te:" + rstat.even)
-            print("\to:" + rstat.odd)
+            print("\te: ${rstat.even}")
+            print("\to: ${rstat.odd}")
             println()
         }
     }

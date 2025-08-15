@@ -8,8 +8,6 @@ import kotlin.math.floor
 
 /**
  * Choose numbers for 777 for Israel.
- *
- * @author Moshe
  */
 open class Lotto777 : Lottery(SIZE) {
     override val minimum: Int = 1

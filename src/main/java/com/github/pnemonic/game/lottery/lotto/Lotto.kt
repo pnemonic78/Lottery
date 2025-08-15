@@ -7,8 +7,6 @@ import kotlin.math.floor
 
 /**
  * Choose numbers for Double Lotto for Israel.
- *
- * @author Moshe
  */
 open class Lotto : Lottery(SIZE) {
     override val minimum: Int = 1

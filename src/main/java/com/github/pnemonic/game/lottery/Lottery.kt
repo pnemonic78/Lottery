@@ -1,23 +1,16 @@
 package com.github.pnemonic.game.lottery
 
 import com.github.pnemonic.game.GameException
-import java.util.Arrays
-import java.util.TreeSet
 import kotlin.random.Random
 
 /**
  * Lottery.
- *
- * @author Moshe
  */
 abstract class Lottery(val size: Int) {
-    private val candidates: MutableSet<Int> = TreeSet()
+    private val candidates = mutableSetOf<Int>()
 
-    /**
-     * Constructs a new lottery.
-     */
     init {
-        setCandidates(null as IntArray?)
+        setCandidates(emptyList<Int>())
     }
 
     abstract val minimum: Int
@@ -51,7 +44,7 @@ abstract class Lottery(val size: Int) {
             index = rnd.nextInt(bag.size)
             candidate = bag.removeAt(index)
             game.lot[pick] = candidate
-            Arrays.sort(game.lot, 0, pick + 1)
+            game.lot.sort(0, pick + 1)
             filter(game, pick, bag)
         }
         playBonus(game)
@@ -98,7 +91,7 @@ abstract class Lottery(val size: Int) {
 
     fun play(numGames: Int): MutableSet<LotteryGame> {
         require(numGames > 0) { "Invalid number of games $numGames" }
-        val games: MutableSet<LotteryGame> = TreeSet()
+        val games = mutableSetOf<LotteryGame>()
         var game: LotteryGame
         var play = 1
         var retry = 0
@@ -126,21 +119,6 @@ abstract class Lottery(val size: Int) {
         return ArrayList(candidates)
     }
 
-    fun setCandidates(candidates: IntArray?) {
-        this.candidates.clear()
-        if (candidates == null || candidates.size < size) {
-            val min = minimum
-            val max = maximum
-            for (n in min..max) {
-                this.candidates.add(n)
-            }
-        } else {
-            for (n in candidates) {
-                this.candidates.add(n)
-            }
-        }
-    }
-
     fun setCandidates(candidates: Collection<Int>?) {
         this.candidates.clear()
         if (candidates == null || candidates.size < size) {
@@ -155,9 +133,10 @@ abstract class Lottery(val size: Int) {
     }
 
     fun setCandidates(candidates: String) {
-        val tokens = candidates.split(",".toRegex()).dropLastWhile { it.isEmpty() }
+        val tokens = candidates.split(",".toRegex())
+            .dropLastWhile { it.isEmpty() }
             .toTypedArray()
-        val balls: MutableSet<Int> = TreeSet()
+        val balls = mutableSetOf<Int>()
         for (token in tokens) {
             balls.add(Integer.valueOf(token))
         }

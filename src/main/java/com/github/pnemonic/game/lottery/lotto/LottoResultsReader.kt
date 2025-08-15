@@ -19,7 +19,7 @@ class LottoResultsReader : LotteryResultsReader() {
         var line: CSVLine
         var columns: Array<String>
         var record: LotteryRecord
-        val format: DateFormat = SimpleDateFormat("dd/MM/yy")
+        val format: DateFormat = SimpleDateFormat("dd/MM/yyyy")
 
         // ignore header
         lines.next()

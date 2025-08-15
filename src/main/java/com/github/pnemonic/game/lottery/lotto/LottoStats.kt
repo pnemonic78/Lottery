@@ -8,8 +8,6 @@ import kotlin.math.min
 
 /**
  * Lotto statistics.
- *
- * @author Moshe
  */
 class LottoStats(lottery: Lotto) : LotteryStats(lottery, 6) {
     override fun createResultsReader(): LotteryResultsReader {

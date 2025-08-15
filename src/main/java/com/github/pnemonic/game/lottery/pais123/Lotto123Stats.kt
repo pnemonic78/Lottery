@@ -10,14 +10,11 @@ import com.github.pnemonic.game.lottery.LotteryRecord
 import com.github.pnemonic.game.lottery.LotteryResultsReader
 import com.github.pnemonic.isEven
 import java.io.File
-import java.util.Arrays
 import kotlin.math.max
 import kotlin.math.min
 
 /**
  * 123 statistics.
- *
- * @author Moshe
  */
 class Lotto123Stats(lottery: Lottery) {
     private var records: List<LotteryRecord>? = null
@@ -171,8 +168,8 @@ class Lotto123Stats(lottery: Lottery) {
                         col++
                     }
                 }
-                System.arraycopy(numStatsRow, 0, numStatsRowSorted, 0, numBalls)
-                Arrays.sort(numStatsRowSorted, forLeastCount)
+                numStatsRow.copyInto(numStatsRowSorted, 0, 0, numBalls)
+                numStatsRowSorted.sortWith(forLeastCount)
                 col = 0
                 for (n in 1..numBalls) {
                     nstat = numStatsRowSorted[col]!!
@@ -180,7 +177,7 @@ class Lotto123Stats(lottery: Lottery) {
                     nstat.indexMostCount = numBalls - col - 1
                     col++
                 }
-                Arrays.sort(numStatsRowSorted, forLeastUsed)
+                numStatsRowSorted.sortWith(forLeastUsed)
                 col = 0
                 for (n in 1..numBalls) {
                     nstat = numStatsRowSorted[col]!!
@@ -247,10 +244,10 @@ class Lotto123Stats(lottery: Lottery) {
         for (rstat in recStats) {
             print(rstat.record!!.id)
             for (c in rstat.consecutive) {
-                print("\t" + c)
+                print("\t$c")
             }
-            print("\te:" + rstat.even)
-            print("\to:" + rstat.odd)
+            print("\te: ${rstat.even}")
+            print("\to: ${rstat.odd}")
             println()
         }
     }

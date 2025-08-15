@@ -8,8 +8,6 @@ import java.io.File
 
 /**
  * 777 statistics.
- *
- * @author Moshe
  */
 class Lotto777Stats(lottery: Lottery) : LotteryStats(lottery, 17) {
     override fun printNumberStats() {

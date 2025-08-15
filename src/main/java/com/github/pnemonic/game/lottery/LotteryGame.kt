@@ -2,8 +2,6 @@ package com.github.pnemonic.game.lottery
 
 /**
  * Lottery game.
- *
- * @author Moshe
  */
 class LotteryGame(size: Int) : Comparable<LotteryGame> {
     var id = 0

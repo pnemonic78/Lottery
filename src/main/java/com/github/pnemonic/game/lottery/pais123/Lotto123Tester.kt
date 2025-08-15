@@ -11,8 +11,6 @@ import kotlin.math.max
 
 /**
  * Test various strategies for "123".
- *
- * @author moshew
  */
 class Lotto123Tester {
     private enum class CompareBy {

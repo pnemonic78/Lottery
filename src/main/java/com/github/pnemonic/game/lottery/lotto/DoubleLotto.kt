@@ -5,8 +5,6 @@ import kotlin.math.floor
 
 /**
  * Choose numbers for Double Lotto for Israel.
- *
- * @author Moshe
  */
 class DoubleLotto : Lotto() {
 }

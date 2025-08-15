@@ -2,7 +2,6 @@ package com.github.pnemonic.game.lottery
 
 import java.text.DateFormat
 import java.text.SimpleDateFormat
-import java.util.Arrays
 import java.util.Calendar
 
 class LotteryRecord(
@@ -48,7 +47,7 @@ class LotteryRecord(
     operator fun compareTo(game: LotteryGame): Int {
         var same = 0
         for (ball in game.lot) {
-            if (Arrays.binarySearch(lot, ball) >= 0) {
+            if (lot.binarySearch(ball) >= 0) {
                 same += 100
             }
         }

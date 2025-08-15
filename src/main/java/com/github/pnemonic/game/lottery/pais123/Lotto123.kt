@@ -5,8 +5,6 @@ import kotlin.math.floor
 
 /**
  * Choose numbers for 123 for Israel.
- *
- * @author Moshe
  */
 class Lotto123 : Lottery(SIZE) {
 

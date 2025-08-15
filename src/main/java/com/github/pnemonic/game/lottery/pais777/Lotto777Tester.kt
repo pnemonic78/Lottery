@@ -6,6 +6,7 @@ import com.github.pnemonic.game.lottery.LotteryGame
 import com.github.pnemonic.game.lottery.LotteryResultsReader
 import java.io.File
 import java.io.IOException
+import kotlin.math.max
 import kotlin.math.min
 
 /**
@@ -50,7 +51,7 @@ class Lotto777Tester : Tester(Lotto777Sub()) {
         var games: Set<LotteryGame>
         var score: Int
         var maxScore = 0
-        var totScore = 0
+        var totalScore = 0
         var win = 0
         var recordIndex = 0
         candidates.clear()
@@ -59,15 +60,15 @@ class Lotto777Tester : Tester(Lotto777Sub()) {
             games = play(Lotto777.PLAYS)
             for (game in games) {
                 score = record.compareTo(game)
-                totScore += score
-                maxScore = score.coerceAtLeast(maxScore)
+                totalScore += score
+                maxScore = max(score, maxScore)
             }
             win += if (maxScore == WIN) 1 else 0
             nextCandidates(grouping, recordIndex)
             recordIndex++
         }
-        val aveScore = totScore / numGamesTotal
-        val winPercent = win.toFloat() / recordsSize * 100
+        val aveScore = totalScore / numGamesTotal
+        val winPercent = win * 100f / recordsSize
         println("$name:\t{max. $maxScore;\tave. $aveScore;\twin $winPercent%}")
     }
 

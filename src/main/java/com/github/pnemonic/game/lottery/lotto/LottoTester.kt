@@ -56,7 +56,7 @@ class LottoTester : Tester(Lotto()) {
         var games: Set<LotteryGame>
         var score: Int
         var maxScore = 0
-        var totScore = 0
+        var totalScore = 0
         var win = 0
         var recordIndex = 0
         candidates.clear()
@@ -65,15 +65,15 @@ class LottoTester : Tester(Lotto()) {
             games = play(Lotto.PLAYS)
             for (game in games) {
                 score = record.compareTo(game)
-                totScore += score
+                totalScore += score
                 maxScore = max(score, maxScore)
             }
             win += if (maxScore == WIN) 1 else 0
             nextCandidates(grouping, recordIndex)
             recordIndex++
         }
-        val aveScore = totScore / numGamesTotal
-        val winPercent = win.toFloat() / recordsSize * 100
+        val aveScore = totalScore / numGamesTotal
+        val winPercent = win * 100f / recordsSize
         println("$name:\t{max. $maxScore;\tave. $aveScore;\twin $winPercent%}")
     }
 

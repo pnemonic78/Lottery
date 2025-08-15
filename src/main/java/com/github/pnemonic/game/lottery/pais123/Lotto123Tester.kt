@@ -7,6 +7,7 @@ import com.github.pnemonic.game.lottery.LotteryRecord
 import com.github.pnemonic.game.lottery.LotteryResultsReader
 import java.io.File
 import java.io.IOException
+import kotlin.math.max
 
 /**
  * Test various strategies for "123".
@@ -125,7 +126,7 @@ class Lotto123Tester {
         var games: Set<LotteryGame>
         var score: Int
         var maxScore = 0
-        var totScore = 0
+        var totalScore = 0
         var win = 0
         var recordIndex = 0
         candidates.clear()
@@ -135,15 +136,15 @@ class Lotto123Tester {
             games = play(Lotto123.PLAYS)
             for (game in games) {
                 score = record.compareTo(game)
-                totScore += score
-                maxScore = score.coerceAtLeast(maxScore)
+                totalScore += score
+                maxScore = max(score, maxScore)
             }
             win += if (maxScore == WIN) 1 else 0
             nextCandidates(comparator, recordIndex)
             recordIndex++
         }
-        val aveScore = totScore / numGamesTotal
-        val winPercent = win.toFloat() / records.size * 100
+        val aveScore = totalScore / numGamesTotal
+        val winPercent = win * 100f / records.size
         println("$name:\t{max. $maxScore;\tave. $aveScore;\twin $winPercent%}")
     }
 

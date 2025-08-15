@@ -1,5 +1,6 @@
 package com.github.pnemonic.game.lottery
 
+import com.github.pnemonic.game.GameException
 import java.util.Arrays
 import java.util.TreeSet
 import kotlin.random.Random
@@ -89,9 +90,9 @@ abstract class Lottery(val size: Int) {
      * Filter the game by applying various rules of probability.
      *
      * @param game the game.
-     * @throws LotException if the game's lot is invalid.
+     * @throws com.github.pnemonic.game.GameException if the game's lot is invalid.
      */
-    @Throws(LotException::class)
+    @Throws(GameException::class)
     protected open fun filterGame(game: LotteryGame) {
     }
 
@@ -106,7 +107,7 @@ abstract class Lottery(val size: Int) {
                 game = play()
                 game.id = play++
                 games.add(game)
-            } catch (le: LotException) {
+            } catch (le: GameException) {
                 // TODO System.err.println(le.getMessage());
                 retry++
                 if (retry >= RETRIES) {

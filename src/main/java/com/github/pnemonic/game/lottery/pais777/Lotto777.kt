@@ -1,6 +1,6 @@
 package com.github.pnemonic.game.lottery.pais777
 
-import com.github.pnemonic.game.lottery.LotException
+import com.github.pnemonic.game.GameException
 import com.github.pnemonic.game.lottery.Lottery
 import com.github.pnemonic.game.lottery.LotteryGame
 import com.github.pnemonic.isEven
@@ -17,7 +17,7 @@ open class Lotto777 : Lottery(SIZE) {
     override val bonusMinimum: Int = 0
     override val bonusMaximum: Int = 0
 
-    @Throws(LotException::class)
+    @Throws(GameException::class)
     override fun filter(game: LotteryGame, pickIndex: Int, bag: MutableList<Int>) {
         super.filter(game, pickIndex, bag)
 
@@ -28,14 +28,14 @@ open class Lotto777 : Lottery(SIZE) {
             if (lot[pickIndex - 4] + 1 == lot[pickIndex - 3] && lot[pickIndex - 3] + 1 == lot[pickIndex - 2] && lot[pickIndex - 2] + 1 == lot[pickIndex - 1] && lot[pickIndex - 1] + 1 == lot[pickIndex]) {
                 // remove 5th consecutive numbers: 1 before; 1 after.
                 candidate = lot[pickIndex - 4] - 1
-                bag.remove(candidate as Any)
+                bag.remove(candidate)
                 candidate = lot[pickIndex] + 1
-                bag.remove(candidate as Any)
+                bag.remove(candidate)
             }
         }
     }
 
-    @Throws(LotException::class)
+    @Throws(GameException::class)
     override fun filterGame(game: LotteryGame) {
         super.filterGame(game)
         var candidate: Int
@@ -45,19 +45,19 @@ open class Lotto777 : Lottery(SIZE) {
         // Rule: Minimum-valued ball cannot exceed MAX_LOWER.
         candidate = lot[0]
         if (candidate > MAX_LOWER) {
-            throw LotException("Minimum-valued ball $candidate exceeds $MAX_LOWER")
+            throw GameException("Minimum-valued ball $candidate exceeds $MAX_LOWER")
         }
         // Rule: Maximum-valued ball cannot precede MIN_UPPER.
         candidate = lot[size - 1]
         if (candidate < MIN_UPPER) {
-            throw LotException("Maximum-valued ball $candidate less than $MIN_UPPER")
+            throw GameException("Maximum-valued ball $candidate less than $MIN_UPPER")
         }
 
         // Rule: Biggest gap between 2 balls.
         var l = 0
         for (l1 in 1 until size) {
             if (lot[l] + MAX_GAP <= lot[l1]) {
-                throw LotException("Widest gap between " + lot[l] + " and " + lot[l1] + " exceeds " + MAX_GAP)
+                throw GameException("Widest gap between " + lot[l] + " and " + lot[l1] + " exceeds " + MAX_GAP)
             }
             l++
         }
@@ -73,10 +73,10 @@ open class Lotto777 : Lottery(SIZE) {
             }
         }
         if (countOdd < MIN_ODD) {
-            throw LotException("Minimum odds less than $MIN_ODD")
+            throw GameException("Minimum odds less than $MIN_ODD")
         }
         if (countEven < MIN_EVEN) {
-            throw LotException("Minimum evens less than $MIN_EVEN")
+            throw GameException("Minimum evens less than $MIN_EVEN")
         }
     }
 

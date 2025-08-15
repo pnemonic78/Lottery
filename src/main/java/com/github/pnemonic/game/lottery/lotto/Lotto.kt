@@ -1,6 +1,6 @@
 package com.github.pnemonic.game.lottery.lotto
 
-import com.github.pnemonic.game.lottery.LotException
+import com.github.pnemonic.game.GameException
 import com.github.pnemonic.game.lottery.Lottery
 import com.github.pnemonic.game.lottery.LotteryGame
 import kotlin.math.floor
@@ -16,7 +16,7 @@ open class Lotto : Lottery(SIZE) {
     override val bonusMinimum: Int = 1
     override val bonusMaximum: Int = 8
 
-    @Throws(LotException::class)
+    @Throws(GameException::class)
     override fun filter(game: LotteryGame, pickIndex: Int, bag: MutableList<Int>) {
         super.filter(game, pickIndex, bag)
         var candidate: Int
@@ -78,19 +78,19 @@ open class Lotto : Lottery(SIZE) {
                 // Rule: Minimum-valued ball cannot exceed MAX_LOWER.
                 candidate = lot[0]
                 if (candidate > MAX_LOWER) {
-                    throw LotException("Minimum-valued ball $candidate exceeds $MAX_LOWER")
+                    throw GameException("Minimum-valued ball $candidate exceeds $MAX_LOWER")
                 }
                 // Rule: Maximum-valued ball cannot precede MIN_UPPER.
                 candidate = lot[size - 1]
                 if (candidate < MIN_UPPER) {
-                    throw LotException("Maximum-valued ball $candidate less than $MIN_UPPER")
+                    throw GameException("Maximum-valued ball $candidate less than $MIN_UPPER")
                 }
 
                 // Rule: Biggest gap between 2 balls.
                 var l = 0
                 for (l1 in 1 until size) {
                     if (lot[l] + MAX_GAP <= lot[l1]) {
-                        throw LotException("Widest gap between " + lot[l] + " and " + lot[l1] + " exceeds " + MAX_GAP)
+                        throw GameException("Widest gap between " + lot[l] + " and " + lot[l1] + " exceeds " + MAX_GAP)
                     }
                     l++
                 }

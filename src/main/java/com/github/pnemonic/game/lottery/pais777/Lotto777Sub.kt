@@ -1,6 +1,6 @@
 package com.github.pnemonic.game.lottery.pais777
 
-import com.github.pnemonic.game.lottery.LotException
+import com.github.pnemonic.game.GameException
 import com.github.pnemonic.game.lottery.Lottery
 import com.github.pnemonic.game.lottery.LotteryGame
 import com.github.pnemonic.isEven
@@ -15,7 +15,7 @@ class Lotto777Sub : Lotto777() {
 
     override val maximum: Int = 35
 
-    @Throws(LotException::class)
+    @Throws(GameException::class)
     override fun filterGame(game: LotteryGame) {
         var candidate: Int
         val lot = game.lot
@@ -24,19 +24,19 @@ class Lotto777Sub : Lotto777() {
         // Rule: Minimum-valued ball cannot exceed MAX_LOWER.
         candidate = lot[0]
         if (candidate > MAX_LOWER) {
-            throw LotException("Minimum-valued ball $candidate exceeds $MAX_LOWER")
+            throw GameException("Minimum-valued ball $candidate exceeds $MAX_LOWER")
         }
         // Rule: Maximum-valued ball cannot precede MIN_UPPER.
         candidate = lot[size - 1]
         if (candidate < MIN_UPPER) {
-            throw LotException("Maximum-valued ball $candidate less than $MIN_UPPER")
+            throw GameException("Maximum-valued ball $candidate less than $MIN_UPPER")
         }
 
         // Rule: Biggest gap between 2 balls.
         var l = 0
         for (l1 in 1 until size) {
             if (lot[l] + MAX_GAP <= lot[l1]) {
-                throw LotException("Widest gap between " + lot[l] + " and " + lot[l1] + " exceeds " + MAX_GAP)
+                throw GameException("Widest gap between " + lot[l] + " and " + lot[l1] + " exceeds " + MAX_GAP)
             }
             l++
         }
@@ -52,10 +52,10 @@ class Lotto777Sub : Lotto777() {
             }
         }
         if (countOdd < MIN_ODD) {
-            throw LotException("Minimum odds less than $MIN_ODD")
+            throw GameException("Minimum odds less than $MIN_ODD")
         }
         if (countEven < MIN_EVEN) {
-            throw LotException("Minimum evens less than $MIN_EVEN")
+            throw GameException("Minimum evens less than $MIN_EVEN")
         }
 
         // Check that pairs are valid.
@@ -72,7 +72,7 @@ class Lotto777Sub : Lotto777() {
             pairIndex1 = ball1 - MINIMUM
             pairCount = PAIRS_COUNT[pairIndex0][pairIndex1]
             if (pairCount == 0) {
-                throw LotException("Pair is uncommon")
+                throw GameException("Pair is uncommon")
             }
             l++
         }

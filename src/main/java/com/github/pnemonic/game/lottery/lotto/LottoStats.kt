@@ -20,7 +20,7 @@ class LottoStats(lottery: Lotto) : LotteryStats(lottery, 6) {
         val thresholdCandidatesAnd = min((thresholdCandidates * 3) / 2, numBalls / 2)
         val lotteryMin = lottery.minimum
         val lotteryMax = lottery.maximum
-        val nstatRow: Array<NumberStatistic?> = numStats!![numStats!!.lastIndex]
+        val nstatRow: Array<NumberStatistic?> = numStats[numStats.lastIndex]
         val asJava = StringBuilder()
         var add: Boolean
         for (nr in nstatRow) {

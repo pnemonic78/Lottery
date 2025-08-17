@@ -23,10 +23,8 @@ abstract class LotteryStats(
     /**
      * Get the number statistics. Each row represents a game. Each column
      * represents a ball.
-     *
-     * @return
      */
-    var numStats: Array<Array<NumberStatistic?>>? = null
+    var numStats: Array<Array<NumberStatistic?>> = emptyArray()
     //FIXME protected set
 
     /**
@@ -112,7 +110,7 @@ abstract class LotteryStats(
         maxRepeat = 0
         val numPairs = Array(numBalls) { IntArray(numBalls) }
         this.numPairs = numPairs
-        val numStats = this.numStats!!
+        val numStats = this.numStats
         var rstat: RecordStatistic
         var nstat: NumberStatistic
         var nstatPrev: NumberStatistic

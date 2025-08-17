@@ -12,7 +12,7 @@ abstract class LotteryResultsReader {
         FileInputStream(file).use {
             records = parse(it)
         }
-        return records.sorted()
+        return records.sortedBy { it.id }
     }
 
     @Throws(IOException::class)

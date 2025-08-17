@@ -3,11 +3,14 @@ package com.github.pnemonic.game.lottery.pais777
 import com.github.pnemonic.game.GameException
 import com.github.pnemonic.game.lottery.Lottery
 import com.github.pnemonic.game.lottery.LotteryGame
+import com.github.pnemonic.game.lottery.LotteryGuess
+import com.github.pnemonic.game.lottery.pais777.Lotto777.Companion.COST
+import com.github.pnemonic.game.lottery.pais777.Lotto777Tester.Companion.BUDGET
 import com.github.pnemonic.isEven
 import kotlin.math.floor
 
 /**
- * Choose numbers for 777 for Israel.
+ * Choose numbers for 777 in Israel.
  */
 open class Lotto777 : Lottery(SIZE) {
     override val minimum: Int = 1
@@ -51,38 +54,50 @@ open class Lotto777 : Lottery(SIZE) {
         }
     }
 
+    override fun calculatePrizes(guess: LotteryGuess, result: LotteryGame) {
+        var match = 0
+        for (ball in guess.balls) {
+            if (result.balls.binarySearch(ball) >= 0) {
+                match++
+            }
+        }
+
+        when (match) {
+            3 -> result.prize = PRIZE_3
+            4 -> result.prize = PRIZE_4
+            5 -> result.prize = PRIZE_5
+            6 -> result.prize = PRIZE_6
+            7 -> result.prize = PRIZE_7
+            else -> result.prize = 0
+        }
+    }
+
     companion object {
-        /**
-         * Cost per game.
-         */
-        private const val COST = 7.00
-
-        /**
-         * Budget.
-         */
-        private const val BUDGET = 200.00 / COST
-
-        /**
-         * Total number of plays per budget.
-         */
-        val PLAYS = floor(BUDGET / COST).toInt()
-
         private const val SIZE = 7
         private const val MAX_LOWER = 23
         private const val MIN_UPPER = 43
         private const val MIN_ODD = 2
         private const val MIN_EVEN = 2
 
+        /**
+         * Cost per game.
+         */
+        const val COST = 7.00
+
         /** Prize for guessing 3 correct numbers. */
-        const val PRIZE_3 = 5.00
+        const val PRIZE_3 = 5
+
         /** Prize for guessing 4 correct numbers. */
-        const val PRIZE_4 = 20.00
+        const val PRIZE_4 = 20
+
         /** Prize for guessing 5 correct numbers. */
-        const val PRIZE_5 = 50.00
+        const val PRIZE_5 = 50
+
         /** Prize for guessing 6 correct numbers. */
-        const val PRIZE_6 = 500.00
+        const val PRIZE_6 = 500
+
         /** Prize for guessing all 7 correct numbers. */
-        const val PRIZE_7 = 70_000.00
+        const val PRIZE_7 = 70_000
     }
 }
 
@@ -92,11 +107,13 @@ open class Lotto777 : Lottery(SIZE) {
  * @param args the array of arguments.
  */
 fun main(args: Array<String>) {
+    //TODO parse history then predict some guesses
     val lottery: Lottery = Lotto777()
     if (args.isNotEmpty()) {
         lottery.setCandidates(args[0])
     }
-    val games = lottery.play(Lotto777.PLAYS)
+    val numPlays = floor(BUDGET / COST).toInt()
+    val games = lottery.play(numPlays)
     for (game in games) {
         lottery.print(game)
     }

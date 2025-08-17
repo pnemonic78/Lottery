@@ -14,11 +14,7 @@ class Roulette111 : RouletteGame() {
     override fun play(ball: Int) {
         wallet -= bet * 2
         val result = RouletteResult(ball)
-        val guess = RouletteGuess(
-            dozens1 = if (dozen1 == dozen12 || dozen2 == dozen12) bet else null,
-            dozens2 = if (dozen1 == dozen24 || dozen2 == dozen24) bet else null,
-            dozens3 = if (dozen1 == dozen36 || dozen2 == dozen36) bet else null
-        )
+        val guess = guess()
         play(guess, result)
         if (result.prize > 0) {
             lossesGrouped[lossCount]++
@@ -55,6 +51,14 @@ class Roulette111 : RouletteGame() {
         stats.profit = wallet
         stats.maxSequenceLosses = lossCountMax
         stats.sequenceLosses = lossesGrouped
+    }
+
+    override fun guess(): RouletteGuess {
+        return RouletteGuess(
+            dozens1 = if (dozen1 === dozen12 || dozen2 === dozen12) bet else null,
+            dozens2 = if (dozen1 === dozen24 || dozen2 === dozen24) bet else null,
+            dozens3 = if (dozen1 === dozen36 || dozen2 === dozen36) bet else null
+        )
     }
 
     override fun getStatistics(): RouletteStats = stats

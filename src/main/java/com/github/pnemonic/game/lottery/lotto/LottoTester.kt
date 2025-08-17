@@ -2,9 +2,10 @@ package com.github.pnemonic.game.lottery.lotto
 
 import com.github.pnemonic.game.NumberStatistic
 import com.github.pnemonic.game.NumberStatisticGrouping
-import com.github.pnemonic.game.Tester
+import com.github.pnemonic.game.lottery.LotteryTester
 import com.github.pnemonic.game.lottery.LotteryGame
 import com.github.pnemonic.game.lottery.LotteryResultsReader
+import com.github.pnemonic.game.lottery.lotto.Lotto.Companion.PLAYS
 import java.io.File
 import java.io.IOException
 import kotlin.math.max
@@ -13,7 +14,7 @@ import kotlin.math.min
 /**
  * Test various strategies for "Lotto".
  */
-class LottoTester : Tester(Lotto()) {
+class LottoTester : LotteryTester(Lotto()) {
     private val thresholdCandidates: Int = (numBalls * THRESHOLD_CANDIDATES_PERCENT) / 100
     private val thresholdCandidatesAnd: Int = min((thresholdCandidates * 3) / 2, numBalls / 2)
     private val thresholdCandidatesOr: Int = thresholdCandidates / 2
@@ -33,8 +34,6 @@ class LottoTester : Tester(Lotto()) {
         val reader: LotteryResultsReader = LottoResultsReader()
         val records = reader.parse(file)
         this.records = records
-        recordsSize = records.size
-        numGamesTotal = recordsSize * Lotto.PLAYS
     }
 
     override fun drive() {
@@ -57,10 +56,11 @@ class LottoTester : Tester(Lotto()) {
         var totalScore = 0
         var win = 0
         var recordIndex = 0
+        var numGamesTotal = 0
         candidates.clear()
         for (record in records) {
             lottery.setCandidates(candidates)
-            games = play(Lotto.PLAYS)
+            games = play(PLAYS, record)
             for (game in games) {
                 score = record.compareTo(game)
                 totalScore += score
@@ -69,18 +69,19 @@ class LottoTester : Tester(Lotto()) {
             win += if (maxScore == WIN) 1 else 0
             nextCandidates(grouping, recordIndex)
             recordIndex++
+            numGamesTotal += games.size
         }
         val aveScore = totalScore / numGamesTotal
-        val winPercent = win * 100f / recordsSize
+        val winPercent = (win * 100f) / records.size
         println("$name:\t{max. $maxScore;\tave. $aveScore;\twin $winPercent%}")
     }
 
     /**
      * Use statistics to determine the next candidates.
      */
-    protected fun nextCandidates(grouping: NumberStatisticGrouping, row: Int) {
+    private fun nextCandidates(grouping: NumberStatisticGrouping, row: Int) {
         // Get the statistics.
-        val nstatRow: Array<NumberStatistic?> = numStats!![row]
+        val nstatRow: Array<NumberStatistic?> = numStats[row]
         candidates.clear()
         var add: Boolean
         for (nr in nstatRow) {

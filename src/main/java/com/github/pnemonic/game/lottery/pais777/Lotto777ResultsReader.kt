@@ -37,17 +37,13 @@ class Lotto777ResultsReader : LotteryResultsReader() {
             for (l in 0 until numBalls) {
                 record.balls[l] = columns[col++].toInt()
             }
-            addRecord(records, record)
+            records.add(record)
         }
         csv.close()
         return records.sortedBy { it.id }
     }
 
-    protected fun addRecord(records: MutableList<LotteryRecord>, record: LotteryRecord) {
-        records.add(record)
-    }
-
-    protected fun getCleanColumns(line: CSVLine): Array<String> {
+    private fun getCleanColumns(line: CSVLine): Array<String> {
         val columns = line.columns
         var col: String
         for (i in columns.indices) {

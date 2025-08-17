@@ -7,4 +7,6 @@ interface GameOfChance<G : GameOfChanceGuess, R : GameOfChanceResult> {
      * Play the game with a known result, and accumulate the statistics.
      */
     fun play(guess: G, result: R)
+
+    fun guess(): G
 }

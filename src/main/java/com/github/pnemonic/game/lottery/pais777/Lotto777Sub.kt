@@ -3,10 +3,13 @@ package com.github.pnemonic.game.lottery.pais777
 import com.github.pnemonic.game.GameException
 import com.github.pnemonic.game.lottery.Lottery
 import com.github.pnemonic.game.lottery.LotteryGame
+import com.github.pnemonic.game.lottery.pais777.Lotto777.Companion.COST
+import com.github.pnemonic.game.lottery.pais777.Lotto777Tester.Companion.BUDGET
 import com.github.pnemonic.isEven
+import kotlin.math.floor
 
 /**
- * Choose numbers for 777 for Israel - balls 1 to 35.
+ * Choose numbers for subset of 777 in Israel (balls 1 to 35).
  */
 class Lotto777Sub : Lotto777() {
     override val minimum: Int = MINIMUM
@@ -1383,8 +1386,8 @@ fun main(args: Array<String>) {
     if (args.isNotEmpty()) {
         lottery.setCandidates(args[0])
     }
-    val plays = Lotto777.PLAYS
-    val games = lottery.play(plays)
+    val numPlays = floor(BUDGET / COST).toInt()
+    val games = lottery.play(numPlays)
     for (game in games) {
         lottery.print(game)
     }

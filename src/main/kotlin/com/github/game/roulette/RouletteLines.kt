@@ -37,16 +37,7 @@ class Roulette5 : RouletteGame() {
     override fun play(ball: Int) {
         wallet -= bet * 5
         val result = RouletteResult(ball)
-        val guess = RouletteGuess(
-            line1To6 = if (line1 == line1To6) bet else null,
-            line7To12 = if (line1 == line7To12 || line2 == line7To12 || line3 == line7To12) bet else null,
-            line10To15 = if (line1 == line10To15 || line2 == line10To15 || line3 == line10To15) bet else null,
-            line13To18 = if (line2 == line13To18 || line3 == line13To18) bet else null,
-            line16To21 = if (line2 == line16To21 || line3 == line16To21) bet else null,
-            line19To24 = if (line3 == line19To24 || line4 == line19To24) bet else null,
-            line25To30 = if (line4 == line25To30 || line5 == line25To30) bet else null,
-            line31To36 = if (line5 == line31To36) bet else null,
-        )
+        val guess = guess()
         play(guess, result)
         if (result.prize > 0) {
             lossesGrouped[lossCount]++
@@ -79,6 +70,19 @@ class Roulette5 : RouletteGame() {
         stats.profit = wallet
         stats.maxSequenceLosses = lossCountMax
         stats.sequenceLosses = lossesGrouped
+    }
+
+    override fun guess(): RouletteGuess {
+        return RouletteGuess(
+            line1To6 = if (line1 === line1To6) bet else null,
+            line7To12 = if (line1 === line7To12 || line2 === line7To12 || line3 === line7To12) bet else null,
+            line10To15 = if (line1 === line10To15 || line2 === line10To15 || line3 === line10To15) bet else null,
+            line13To18 = if (line2 === line13To18 || line3 === line13To18) bet else null,
+            line16To21 = if (line2 === line16To21 || line3 === line16To21) bet else null,
+            line19To24 = if (line3 === line19To24 || line4 === line19To24) bet else null,
+            line25To30 = if (line4 === line25To30 || line5 === line25To30) bet else null,
+            line31To36 = if (line5 === line31To36) bet else null,
+        )
     }
 
     override fun getStatistics(): RouletteStats = stats

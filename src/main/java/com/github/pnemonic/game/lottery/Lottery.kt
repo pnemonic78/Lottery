@@ -1,12 +1,13 @@
 package com.github.pnemonic.game.lottery
 
+import com.github.game.GameOfChance
 import com.github.pnemonic.game.GameException
 import kotlin.random.Random
 
 /**
  * Lottery.
  */
-abstract class Lottery(val size: Int) {
+abstract class Lottery(val size: Int) : GameOfChance<LotteryGuess, LotteryGame> {
     private val candidates = mutableSetOf<Int>()
 
     init {
@@ -32,24 +33,23 @@ abstract class Lottery(val size: Int) {
      * @return the lot of chosen numbers.
      */
     fun play(): LotteryGame {
-        val size = this.size
-        val bag = createBag()
+        return play(guess())
+    }
+
+    override fun play(guess: LotteryGuess): LotteryGame {
         val game = LotteryGame(size)
-        var index: Int
-        var candidate: Int
-        for (pick in 0 until size) {
-            if (bag.isEmpty()) {
-                break
-            }
-            index = rnd.nextInt(bag.size)
-            candidate = bag.removeAt(index)
-            game.balls[pick] = candidate
-            game.balls.sort(0, pick + 1)
-            filter(game, pick, bag)
-        }
         playBonus(game)
         filterGame(game)
+        calculatePrizes(guess, game)
         return game
+    }
+
+    override fun play(guess: LotteryGuess, result: LotteryGame) {
+        calculatePrizes(guess, result)
+    }
+
+    open protected fun calculatePrizes(guess: LotteryGuess, result: LotteryGame) {
+        result.prize = 0
     }
 
     /**
@@ -89,18 +89,39 @@ abstract class Lottery(val size: Int) {
     protected open fun filterGame(game: LotteryGame) {
     }
 
+    fun play(numGames: Int, record: LotteryGame): List<LotteryGame> {
+        require(numGames > 0) { "Invalid number of games $numGames" }
+        val games = mutableListOf<LotteryGame>()
+        var retry = 0
+        while (games.size < numGames) {
+            try {
+                val guess = guess()
+                val game = record.copy()
+                play(guess, game)
+                games.add(game)
+            } catch (e: GameException) {
+                // TODO System.err.println(e.getMessage());
+                retry++
+                if (retry >= RETRIES) {
+                    break
+                }
+            }
+        }
+        return games
+    }
+
     fun play(numGames: Int): List<LotteryGame> {
         require(numGames > 0) { "Invalid number of games $numGames" }
         val games = mutableListOf<LotteryGame>()
-        var play = 1
+        var id = 1
         var retry = 0
         while (games.size < numGames) {
             try {
                 val game = play()
-                game.id = play++
+                game.id = id++
                 games.add(game)
             } catch (e: GameException) {
-                // TODO System.err.println(le.getMessage());
+                // TODO System.err.println(e.getMessage());
                 retry++
                 if (retry >= RETRIES) {
                     break
@@ -115,6 +136,26 @@ abstract class Lottery(val size: Int) {
      */
     protected fun createBag(): MutableList<Int> {
         return ArrayList(candidates)
+    }
+
+    override fun guess(): LotteryGuess {
+        val bag = createBag()
+        val size = this.size
+        val balls = IntArray(size)
+        var index: Int
+        var candidate: Int
+        for (pick in 0 until size) {
+            if (bag.isEmpty()) {
+                break
+            }
+            index = rnd.nextInt(bag.size)
+            candidate = bag.removeAt(index)
+            balls[pick] = candidate
+            //balls.sort(0, pick + 1)
+            //filter(balls, pick, bag)
+        }
+        balls.sort()
+        return LotteryGuess(balls = balls)
     }
 
     fun setCandidates(candidates: Collection<Int>?) {

@@ -16,6 +16,18 @@ abstract class RouletteGame : GameOfChance<RouletteGuess, RouletteResult> {
     }
 
     override fun play(guess: RouletteGuess, result: RouletteResult) {
+        calculatePrizes(guess, result)
+    }
+
+    override fun guess(): RouletteGuess {
+        return RouletteGuess()
+    }
+
+    abstract fun play(ball: Int)
+
+    abstract fun getStatistics(): RouletteStats
+
+    private fun calculatePrizes(guess: RouletteGuess, result: RouletteResult) {
         val ball = result.ball
         if (guess.singles != null) result.prize += guess.singles[ball] * 36
         if (guess.isBlack != null && isBlack(ball)) result.prize += guess.isBlack * 2
@@ -43,10 +55,6 @@ abstract class RouletteGame : GameOfChance<RouletteGuess, RouletteResult> {
         if (guess.line31To36 != null && (ball in Roulette5.line31To36)) result.prize += guess.line31To36 * 6
         //TODO check other prizes
     }
-
-    abstract fun play(ball: Int)
-
-    abstract fun getStatistics(): RouletteStats
 
     private fun isRed(ball: Int): Boolean {
         return when (ball) {

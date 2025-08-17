@@ -23,10 +23,8 @@ class Lotto123Stats(lottery: Lottery) {
     /**
      * Get the number statistics. Each row represents a game. Each column
      * represents a ball.
-     *
-     * @return
      */
-    var numberStatistics: Array<Array<NumberStatistic?>>? = null
+    var numberStatistics: Array<Array<NumberStatistic?>> = emptyArray()
     //FIXME private set
 
     /**
@@ -117,7 +115,7 @@ class Lotto123Stats(lottery: Lottery) {
         var row = 0
         var row_1: Int
         for (record in records) {
-            numStatsRow = numberStatistics!![row]
+            numStatsRow = numberStatistics[row]
             row_1 = row - 1
             if (processRecordStatistics) {
                 for (ball in record.balls) {
@@ -142,7 +140,7 @@ class Lotto123Stats(lottery: Lottery) {
                     nstat.occur++
                 }
                 if (row_1 >= 0) {
-                    numStatsRow_1 = numberStatistics!![row_1]
+                    numStatsRow_1 = numberStatistics[row_1]
                     col = 0
                     for (n in 1..numBalls) {
                         nstat = numStatsRow[col]!!
@@ -190,7 +188,7 @@ class Lotto123Stats(lottery: Lottery) {
         }
     }
 
-    protected fun addStat(record: LotteryRecord): RecordStatistic {
+    private fun addStat(record: LotteryRecord): RecordStatistic {
         val size = numRecordBalls
         val sizeConsecutives = size - 1
         val rstat = RecordStatistic(sizeConsecutives)
@@ -233,7 +231,7 @@ class Lotto123Stats(lottery: Lottery) {
         return rstat
     }
 
-    protected fun printRecordStats() {
+    private fun printRecordStats() {
         println("max. lower: $maxLower")
         println("min. upper: $minUpper")
         println("max. gap: $maxGap")
@@ -252,10 +250,10 @@ class Lotto123Stats(lottery: Lottery) {
         }
     }
 
-    protected fun printNumberStats() {
+    private fun printNumberStats() {
         println("max. repeat: $maxRepeat")
         val threshold = 35
-        val nstatRow: Array<NumberStatistic?> = numberStatistics!![numberStatistics!!.size - 1]
+        val nstatRow: Array<NumberStatistic?> = numberStatistics[numberStatistics.lastIndex]
         val asJava = StringBuffer()
         for (nr in nstatRow) {
             val stat = nr!!

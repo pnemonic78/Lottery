@@ -1,18 +1,19 @@
 package com.github.pnemonic.game.lottery.pais777
 
 import com.github.pnemonic.game.NumberStatisticGrouping
-import com.github.pnemonic.game.Tester
 import com.github.pnemonic.game.lottery.LotteryGame
 import com.github.pnemonic.game.lottery.LotteryResultsReader
+import com.github.pnemonic.game.lottery.LotteryTester
+import com.github.pnemonic.game.lottery.pais777.Lotto777.Companion.COST
 import java.io.File
 import java.io.IOException
-import kotlin.math.max
+import kotlin.math.floor
 import kotlin.math.min
 
 /**
  * Test various strategies for "777".
  */
-class Lotto777Tester : Tester(Lotto777Sub()) {
+class Lotto777Tester : LotteryTester(Lotto777()) {
     private val thresholdCandidates: Int = (numBalls * THRESHOLD_CANDIDATES_PERCENT) / 100
     private val thresholdCandidatesAnd: Int = min((thresholdCandidates * 3) / 2, numBalls / 2)
     private val thresholdCandidatesOr: Int = thresholdCandidates / 2
@@ -28,8 +29,6 @@ class Lotto777Tester : Tester(Lotto777Sub()) {
     override fun parse(file: File) {
         val reader: LotteryResultsReader = Lotto777ResultsReader()
         records = reader.parse(file)
-        recordsSize = records.size
-        numGamesTotal = recordsSize * Lotto777.PLAYS
     }
 
     override fun drive() {
@@ -46,36 +45,33 @@ class Lotto777Tester : Tester(Lotto777Sub()) {
     }
 
     override fun drive(grouping: NumberStatisticGrouping, name: String) {
+        val numPlays = floor(BUDGET / COST).toInt()
         var games: Collection<LotteryGame>
-        var score: Int
-        var maxScore = 0
-        var totalScore = 0
-        var win = 0
+        var wallet = BUDGET
         var recordIndex = 0
+        var numGamesTotal = 0
         candidates.clear()
         for (record in records) {
             lottery.setCandidates(candidates)
-            games = play(Lotto777.PLAYS)
+            wallet -= numPlays * COST
+            games = play(numPlays, record)
             for (game in games) {
-                score = record.compareTo(game)
-                totalScore += score
-                maxScore = max(score, maxScore)
+                wallet += game.prize
             }
-            win += if (maxScore == WIN) 1 else 0
             nextCandidates(grouping, recordIndex)
             recordIndex++
+            numGamesTotal += games.size
         }
-        val aveScore = totalScore / numGamesTotal
-        val winPercent = win * 100f / recordsSize
-        println("$name:\t{max. $maxScore;\tave. $aveScore;\twin $winPercent%}")
+        val aveScore = wallet / numGamesTotal
+        println("$name:\t{wallet $wallet; ave. $aveScore}")
     }
 
     /**
      * Use statistics to determine the next candidates.
      */
-    protected fun nextCandidates(grouping: NumberStatisticGrouping, row: Int) {
+    private fun nextCandidates(grouping: NumberStatisticGrouping, row: Int) {
         // Get the statistics.
-        val nstatRow = numStats!![row]
+        val nstatRow = numStats[row]
         candidates.clear()
         var add: Boolean
         for (nr in nstatRow) {
@@ -156,12 +152,16 @@ class Lotto777Tester : Tester(Lotto777Sub()) {
     companion object {
         // per hundred
         private const val THRESHOLD_CANDIDATES_PERCENT = 50
-        private const val WIN = 700
 
         /**
          * Maximum repeat of same number.
          */
         private const val MAX_REPEAT_THRESHOLD = 8
+
+        /**
+         * Budget.
+         */
+        internal const val BUDGET = 200.00
     }
 }
 

@@ -5,28 +5,39 @@ import com.github.pnemonic.game.lottery.Lottery
 import com.github.pnemonic.game.lottery.LotteryGame
 import com.github.pnemonic.game.lottery.LotteryRecord
 import com.github.pnemonic.game.lottery.LotteryResultsReader
+import com.github.pnemonic.game.lottery.pais123.Lotto123.Companion.COST
 import java.io.File
 import java.io.IOException
-import kotlin.math.max
+import kotlin.math.floor
 
 /**
  * Test various strategies for "123".
  */
 class Lotto123Tester {
     private enum class CompareBy {
-        REGULAR, LEAST_COUNT, MOST_COUNT, LEAST_USED, MOST_USED, LEAST_REPEAT, MOST_REPEAT, COUNT_223, COUNT_232, COUNT_322, LEAST_COUNT_LEAST_USED, LEAST_COUNT_MOST_USED, MOST_COUNT_LEAST_USED, MOST_COUNT_MOST_USED
+        REGULAR,
+        LEAST_COUNT,
+        MOST_COUNT,
+        LEAST_USED,
+        MOST_USED,
+        LEAST_REPEAT,
+        MOST_REPEAT,
+        COUNT_223,
+        COUNT_232,
+        COUNT_322,
+        LEAST_COUNT_LEAST_USED,
+        LEAST_COUNT_MOST_USED,
+        MOST_COUNT_LEAST_USED,
+        MOST_COUNT_MOST_USED
     }
 
-    private var records: List<LotteryRecord>? = null
+    private var records: List<LotteryRecord> = emptyList()
     private val lottery: Lottery = Lotto123()
     private val lotterySize: Int = lottery.size
-    private val lotteryMin: Int = lottery.minimum
-    private val lotteryMax: Int = lottery.maximum
     private val numBalls: Int = lottery.numberBalls
     private val thresholdCandidates: Int = (numBalls * THRESHOLD_CANDIDATES_PERCENT) / 100
     private val candidates: MutableList<Int> = ArrayList(numBalls)
     private var numStats: Array<Array<NumberStatistic?>>? = null
-    private var numGamesTotal = 0
 
     init {
         require(thresholdCandidates >= lotterySize) { "too few candidates" }
@@ -35,23 +46,21 @@ class Lotto123Tester {
     @Throws(IOException::class)
     fun parse(file: File) {
         val reader: LotteryResultsReader = Lotto123ResultsReader()
-        val records = reader.parse(file)
-        this.records = records
-        numGamesTotal = records.size * Lotto123.PLAYS
+        records = reader.parse(file)
     }
 
     fun drive() {
         val stats = Lotto123Stats(lottery)
         try {
-            stats.processRecords(records!!, false, true)
+            stats.processRecords(records, false, true)
             numStats = stats.numberStatistics
             driveRegular()
             driveLeastCount()
             driveMostCount()
             driveLeastUsed()
             driveMostUsed()
-            // // driveLeastRepeated();
-            // // driveMostRepeated();
+            // driveLeastRepeated();
+            // driveMostRepeated();
             driveLeastCountLeastUsed()
             driveLeastCountMostUsed()
             driveMostCountLeastUsed()
@@ -64,86 +73,82 @@ class Lotto123Tester {
         }
     }
 
-    protected fun driveLeastUsed() {
+    private fun driveLeastUsed() {
         drive(CompareBy.LEAST_USED, "least used")
     }
 
-    protected fun driveMostUsed() {
+    private fun driveMostUsed() {
         drive(CompareBy.MOST_USED, "most used")
     }
 
-    protected fun driveLeastCount() {
+    private fun driveLeastCount() {
         drive(CompareBy.LEAST_COUNT, "least count")
     }
 
-    protected fun driveMostCount() {
+    private fun driveMostCount() {
         drive(CompareBy.MOST_COUNT, "most count")
     }
 
-    protected fun driveLeastRepeated() {
+    private fun driveLeastRepeated() {
         drive(CompareBy.LEAST_REPEAT, "least repeated")
     }
 
-    protected fun driveMostRepeated() {
+    private fun driveMostRepeated() {
         drive(CompareBy.MOST_REPEAT, "most repeated")
     }
 
-    protected fun driveRegular() {
+    private fun driveRegular() {
         drive(CompareBy.REGULAR, "regular")
     }
 
-    protected fun driveCount223() {
+    private fun driveCount223() {
         drive(CompareBy.COUNT_223, "2-2-3")
     }
 
-    protected fun driveCount232() {
+    private fun driveCount232() {
         drive(CompareBy.COUNT_232, "2-3-2")
     }
 
-    protected fun driveCount322() {
+    private fun driveCount322() {
         drive(CompareBy.COUNT_322, "3-2-2")
     }
 
-    protected fun driveLeastCountLeastUsed() {
+    private fun driveLeastCountLeastUsed() {
         drive(CompareBy.LEAST_COUNT_LEAST_USED, "least count, least used")
     }
 
-    protected fun driveLeastCountMostUsed() {
+    private fun driveLeastCountMostUsed() {
         drive(CompareBy.LEAST_COUNT_MOST_USED, "least count, most used")
     }
 
-    protected fun driveMostCountLeastUsed() {
+    private fun driveMostCountLeastUsed() {
         drive(CompareBy.MOST_COUNT_LEAST_USED, "most count, least used")
     }
 
-    protected fun driveMostCountMostUsed() {
+    private fun driveMostCountMostUsed() {
         drive(CompareBy.MOST_COUNT_MOST_USED, "most count, most used")
     }
 
     private fun drive(comparator: CompareBy, name: String) {
+        val numPlays = floor(BUDGET / COST).toInt()
         var games: Collection<LotteryGame>
-        var score: Int
-        var maxScore = 0
-        var totalScore = 0
-        var win = 0
+        var wallet = BUDGET
         var recordIndex = 0
+        var numGamesTotal = 0
         candidates.clear()
-        val records = this.records!!
         for (record in records) {
             lottery.setCandidates(candidates)
-            games = play(Lotto123.PLAYS)
+            wallet -= numPlays * COST
+            games = play(numPlays/*, record*/)
             for (game in games) {
-                score = record.compareTo(game)
-                totalScore += score
-                maxScore = max(score, maxScore)
+                wallet += game.prize
             }
-            win += if (maxScore == WIN) 1 else 0
             nextCandidates(comparator, recordIndex)
             recordIndex++
+            numGamesTotal += games.size
         }
-        val aveScore = totalScore / numGamesTotal
-        val winPercent = win * 100f / records.size
-        println("$name:\t{max. $maxScore;\tave. $aveScore;\twin $winPercent%}")
+        val aveScore = wallet / numGamesTotal
+        println("$name:\t{wallet $wallet; ave. $aveScore}")
     }
 
     private fun play(numGames: Int): List<LotteryGame> {
@@ -218,12 +223,16 @@ class Lotto123Tester {
     companion object {
         // per hundred
         private const val THRESHOLD_CANDIDATES_PERCENT = 50
-        private const val WIN = 300
 
         /**
          * Maximum repeat of same number, even though statistically maximum is 9.
          */
         private const val MAX_REPEAT_THRESHOLD = 8
+
+        /**
+         * Budget.
+         */
+        internal const val BUDGET = 20.00
     }
 }
 

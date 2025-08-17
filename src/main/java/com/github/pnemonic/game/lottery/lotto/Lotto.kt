@@ -6,7 +6,7 @@ import com.github.pnemonic.game.lottery.LotteryGame
 import kotlin.math.floor
 
 /**
- * Choose numbers for Double Lotto for Israel.
+ * Choose numbers for Lotto in Israel.
  */
 open class Lotto : Lottery(SIZE) {
     override val minimum: Int = 1

@@ -3,7 +3,7 @@ package com.github.pnemonic.game.lottery.lotto
 import kotlin.math.floor
 
 /**
- * Choose numbers for Double Lotto for Israel.
+ * Choose numbers for Double Lotto in Israel.
  */
 class DoubleLotto : Lotto()
 

@@ -2,8 +2,8 @@ package com.github.game.roulette
 
 import kotlin.random.Random
 
-class RouletteLosses {
-    fun run() {
+class RouletteTester {
+    fun drive() {
         val game1 = Roulette1()
         val game1221 = Roulette1221()
         val game222 = Roulette222()
@@ -71,7 +71,15 @@ class RouletteLosses {
     }
 }
 
+/**
+ * Main method.
+ */
 fun main() {
-    RouletteLosses().run()
+    val tester = RouletteTester()
+    try {
+        tester.drive()
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
 }
 

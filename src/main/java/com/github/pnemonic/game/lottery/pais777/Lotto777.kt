@@ -19,7 +19,7 @@ open class Lotto777 : Lottery(SIZE) {
     override fun filterGame(game: LotteryGame) {
         super.filterGame(game)
         var candidate: Int
-        val lot = game.lot
+        val lot = game.balls
         val size = lot.size
 
         // Rule: Minimum-valued ball cannot exceed MAX_LOWER.

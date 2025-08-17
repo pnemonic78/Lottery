@@ -21,7 +21,7 @@ open class Lotto : Lottery(SIZE) {
 
         // Rule: Too few "more than triple" consecutive numbers.
         if (pickIndex >= 2) {
-            val lot = game.lot
+            val lot = game.balls
             val size = lot.size
 
             val i = pickIndex

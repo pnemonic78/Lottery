@@ -35,7 +35,7 @@ class Lotto123ResultsReader : LotteryResultsReader() {
             }
             var col = COLUMN_BALL
             for (l in 0 until numBalls) {
-                record.lot[l] = columns[col--].toInt()
+                record.balls[l] = columns[col--].toInt()
             }
             addRecord(records, record)
         }

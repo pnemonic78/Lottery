@@ -128,9 +128,9 @@ abstract class LotteryStats(
             numStatsRow = numStats[row]
             row_1 = row - 1
             if (processRecordStatistics) {
-                maxLower = max(maxLower, record.lot[0])
+                maxLower = max(maxLower, record.balls[0])
                 for (i in numRecordBalls - 1 downTo 1) {
-                    val n = record.lot[i]
+                    val n = record.balls[i]
                     if (n in lotteryMin..lotteryMax) {
                         minUpper = min(minUpper, n)
                         break
@@ -139,7 +139,7 @@ abstract class LotteryStats(
                 rstat = addStat(record)
                 for (i in rstat.gap.indices) {
                     val gap = rstat.gap[i]
-                    val n0 = record.lot[i]
+                    val n0 = record.balls[i]
                     val n1 = n0 + gap
                     if (n0 in lotteryMin..lotteryMax && n1 in lotteryMin..lotteryMax) {
                         maxGap = max(maxGap, gap)
@@ -160,13 +160,13 @@ abstract class LotteryStats(
                 var pairIndex: Int
                 var pairIndex2: Int
                 col = 0
-                while (col < record.lot.size) {
-                    pair = record.lot[col]
+                while (col < record.balls.size) {
+                    pair = record.balls[col]
                     if (pair in lotteryMin..lotteryMax) {
                         pairIndex = pair - lotteryMin
                         col2 = col + 1
-                        if (col2 < record.lot.size) {
-                            pair2 = record.lot[col2]
+                        if (col2 < record.balls.size) {
+                            pair2 = record.balls[col2]
                             if (pair2 in lotteryMin..lotteryMax) {
                                 pairIndex2 = pair2 - lotteryMin
                                 numPairs[pairIndex][pairIndex2]++
@@ -176,7 +176,7 @@ abstract class LotteryStats(
                     }
                     col++
                 }
-                for (n in record.lot) {
+                for (n in record.balls) {
                     if (n in lotteryMin..lotteryMax) {
                         col = n - lotteryMin
                         nstat = numStatsRow[col]!!
@@ -252,8 +252,8 @@ abstract class LotteryStats(
             var i = 0
             var i1 = 1
             while (i1 <= con.size) {
-                con[i] = record.lot[i] + 1 == record.lot[i1]
-                rstat.gap[i] = record.lot[i1] - record.lot[i]
+                con[i] = record.balls[i] + 1 == record.balls[i1]
+                rstat.gap[i] = record.balls[i1] - record.balls[i]
                 i++
                 i1++
             }
@@ -276,7 +276,7 @@ abstract class LotteryStats(
             i++
             i1++
         }
-        for (ball in record.lot) {
+        for (ball in record.balls) {
             if (ball.isEven) {
                 rstat.even++
             } else {

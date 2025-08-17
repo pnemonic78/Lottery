@@ -120,7 +120,7 @@ class Lotto123Stats(lottery: Lottery) {
             numStatsRow = numberStatistics!![row]
             row_1 = row - 1
             if (processRecordStatistics) {
-                for (ball in record.lot) {
+                for (ball in record.balls) {
                     maxLower = max(maxLower, ball)
                     minUpper = min(minUpper, ball)
                 }
@@ -137,7 +137,7 @@ class Lotto123Stats(lottery: Lottery) {
                     numStatsRow[col] = nstat
                     col++
                 }
-                for (n in record.lot) {
+                for (n in record.balls) {
                     nstat = numStatsRow[n - 1]!!
                     nstat.occur++
                 }
@@ -198,8 +198,8 @@ class Lotto123Stats(lottery: Lottery) {
         val con = BooleanArray(sizeConsecutives)
         var i = 0
         for (i1 in 1..con.size) {
-            con[i] = record.lot[i] + 1 == record.lot[i1]
-            rstat.gap[i] = record.lot[i1] - record.lot[i]
+            con[i] = record.balls[i] + 1 == record.balls[i1]
+            rstat.gap[i] = record.balls[i1] - record.balls[i]
             i++
         }
         var c: Boolean
@@ -218,7 +218,7 @@ class Lotto123Stats(lottery: Lottery) {
             }
             i++
         }
-        for (ball in record.lot) {
+        for (ball in record.balls) {
             if (ball.isEven) {
                 rstat.even++
             } else {

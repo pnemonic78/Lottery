@@ -29,7 +29,7 @@ abstract class Lottery(val size: Int) {
      *
      * Populate the bag of numbers to choose from, and remove 6 candidates.
      *
-     * @return the lot of chosen numbers - <tt>null</tt> if game is invalid.
+     * @return the lot of chosen numbers.
      */
     fun play(): LotteryGame {
         val size = this.size
@@ -43,8 +43,8 @@ abstract class Lottery(val size: Int) {
             }
             index = rnd.nextInt(bag.size)
             candidate = bag.removeAt(index)
-            game.lot[pick] = candidate
-            game.lot.sort(0, pick + 1)
+            game.balls[pick] = candidate
+            game.balls.sort(0, pick + 1)
             filter(game, pick, bag)
         }
         playBonus(game)
@@ -58,13 +58,13 @@ abstract class Lottery(val size: Int) {
      * @param game the game.
      */
     fun print(game: LotteryGame) {
-        print("Play: " + game.id)
+        print("Play: ${game.id}")
         print("\tLotto:")
-        for (i in game.lot) {
-            print("\t" + i)
+        for (b in game.balls) {
+            print("\t$b")
         }
         if (game.bonus > 0) {
-            print("\tBonus: " + game.bonus)
+            print("\tBonus: ${game.bonus}")
         }
         println()
     }
@@ -89,18 +89,17 @@ abstract class Lottery(val size: Int) {
     protected open fun filterGame(game: LotteryGame) {
     }
 
-    fun play(numGames: Int): MutableSet<LotteryGame> {
+    fun play(numGames: Int): List<LotteryGame> {
         require(numGames > 0) { "Invalid number of games $numGames" }
-        val games = mutableSetOf<LotteryGame>()
-        var game: LotteryGame
+        val games = mutableListOf<LotteryGame>()
         var play = 1
         var retry = 0
         while (games.size < numGames) {
             try {
-                game = play()
+                val game = play()
                 game.id = play++
                 games.add(game)
-            } catch (le: GameException) {
+            } catch (e: GameException) {
                 // TODO System.err.println(le.getMessage());
                 retry++
                 if (retry >= RETRIES) {
@@ -108,13 +107,12 @@ abstract class Lottery(val size: Int) {
                 }
             }
         }
-        play = 1
-        for (g in games) {
-            g.id = play++
-        }
         return games
     }
 
+    /**
+     * Create a bag of balls to choose from.
+     */
     protected fun createBag(): MutableList<Int> {
         return ArrayList(candidates)
     }

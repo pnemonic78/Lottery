@@ -3,29 +3,15 @@ package com.github.pnemonic.game.lottery
 /**
  * Lottery game.
  */
-class LotteryGame(size: Int) : Comparable<LotteryGame> {
-    var id = 0
-    var lot: IntArray = IntArray(size)
-    var bonus = 0
-
-    override fun hashCode(): Int {
-        return id
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (other is LotteryGame) {
-            return lot.contentEquals(other.lot) && bonus == other.bonus
-        }
-        return super.equals(other)
-    }
+class LotteryGame(size: Int) : LotteryResult(size), Comparable<LotteryGame> {
 
     override fun compareTo(other: LotteryGame): Int {
-        val size0 = lot.size
-        val size1 = other.lot.size
+        val size0 = balls.size
+        val size1 = other.balls.size
         var c = size0 - size1
         if (c == 0) {
-            val lot0 = lot
-            val lot1 = other.lot
+            val lot0 = balls
+            val lot1 = other.balls
             var i = 0
             while (i < size0 && c == 0) {
                 c = lot0[i] - lot1[i]
@@ -39,15 +25,5 @@ class LotteryGame(size: Int) : Comparable<LotteryGame> {
             }
         }
         return c
-    }
-
-    override fun toString(): String {
-        val buf = StringBuilder()
-        buf.append(id).append(": ")
-        for (ball in lot) {
-            buf.append(ball).append(' ')
-        }
-        buf.append('+').append(bonus)
-        return buf.toString()
     }
 }

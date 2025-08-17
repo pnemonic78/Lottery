@@ -15,7 +15,7 @@ class Lotto777Sub : Lotto777() {
     @Throws(GameException::class)
     override fun filterGame(game: LotteryGame) {
         var candidate: Int
-        val lot = game.lot
+        val lot = game.balls
         val size = lot.size
 
         // Rule: Minimum-valued ball cannot exceed MAX_LOWER.

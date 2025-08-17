@@ -35,7 +35,7 @@ class LottoResultsReader : LotteryResultsReader() {
             }
             var col = COLUMN_BALL
             for (l in 0 until NUM_BALLS) {
-                record.lot[l] = columns[col++].toInt()
+                record.balls[l] = columns[col++].toInt()
             }
             record.bonus = columns[col].toInt()
 //            if (record.balls[5] > 37) {

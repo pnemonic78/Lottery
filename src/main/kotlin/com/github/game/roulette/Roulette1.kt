@@ -3,23 +3,24 @@ package com.github.game.roulette
 import kotlin.math.max
 
 class Roulette1 : RouletteGame() {
-    private val stats = RouletteStats()
-
     private var lossCount = 0
     private var lossCountMax = 0
-    private var dozen1: IntRange = dozen12
-    private var dozen2: IntRange = dozen36
     private val lossesGrouped = IntArray(15)
     private var wallet = 0
     private var bet = 1
 
     override fun play(ball: Int) {
-        wallet -= bet * 4
-        val win = (ball in dozen1) || (ball in dozen2)
-        if (win) {
+        wallet -= bet * 2
+        val result = RouletteResult(ball)
+        val guess = RouletteGuess(
+            dozens1 = bet,
+            dozens3 = bet
+        )
+        play(guess, result)
+        if (result.prize > 0) {
             lossesGrouped[lossCount]++
             lossCount = 0
-            wallet += bet * 6
+            wallet += result.prize
             bet = 1
         } else {
             lossCount++

@@ -12,7 +12,6 @@ class NextLikely : RouletteGame() {
     // Map<previous, Map<next_dozen, count>>
     private val nextDozens = mutableMapOf<Int, MutableMap<Int, Int>>()
     private var previous = -1
-    private val stats = RouletteStats()
 
     private var lossCount = 0
     private var lossCountMax = 0
@@ -49,11 +48,17 @@ class NextLikely : RouletteGame() {
         }
 
         wallet -= bet * 2
-        val win = (ball in dozen1) || (ball in dozen2)
-        if (win) {
+        val result = RouletteResult(ball)
+        val guess = RouletteGuess(
+            dozens1 = if (dozen1 == dozen12 || dozen2 == dozen12) bet else null,
+            dozens2 = if (dozen1 == dozen24 || dozen2 == dozen24) bet else null,
+            dozens3 = if (dozen1 == dozen36 || dozen2 == dozen36) bet else null
+        )
+        play(guess, result)
+        if (result.prize > 0) {
             lossesGrouped[lossCount]++
             lossCount = 0
-            wallet += bet * 3
+            wallet += result.prize
             bet = 1
         } else {
             lossCount++
@@ -268,7 +273,7 @@ class NextLikely : RouletteGame() {
             val countsDozens = nextDozens[previous] ?: continue
             val sortedDozens = countsDozens.map { Pair(it.key, it.value) }
                 .sortedWith(comparator)
-                .map { "${dozens[it.first]}: ${it.second}"  }
+                .map { "${dozens[it.first]}: ${it.second}" }
 
             printer.println("$previous: $sorted $sortedDozens")
         }

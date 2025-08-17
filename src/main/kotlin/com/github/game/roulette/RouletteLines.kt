@@ -23,8 +23,6 @@ import kotlin.math.min
  * </ol>
  */
 class Roulette5 : RouletteGame() {
-    private val stats = RouletteStats()
-
     private var lossCount = 0
     private var lossCountMax = 0
     private var line1: IntRange = line1To6
@@ -38,17 +36,28 @@ class Roulette5 : RouletteGame() {
 
     override fun play(ball: Int) {
         wallet -= bet * 5
-        val win = (ball in line1) || (ball in line2) || (ball in line3) || (ball in line4) || (ball in line5)
-        if (win) {
+        val result = RouletteResult(ball)
+        val guess = RouletteGuess(
+            line1To6 = if (line1 == line1To6) bet else null,
+            line7To12 = if (line1 == line7To12 || line2 == line7To12 || line3 == line7To12) bet else null,
+            line10To15 = if (line1 == line10To15 || line2 == line10To15 || line3 == line10To15) bet else null,
+            line13To18 = if (line2 == line13To18 || line3 == line13To18) bet else null,
+            line16To21 = if (line2 == line16To21 || line3 == line16To21) bet else null,
+            line19To24 = if (line3 == line19To24 || line4 == line19To24) bet else null,
+            line25To30 = if (line4 == line25To30 || line5 == line25To30) bet else null,
+            line31To36 = if (line5 == line31To36) bet else null,
+        )
+        play(guess, result)
+        if (result.prize > 0) {
             lossesGrouped[lossCount]++
             lossCount = 0
-            wallet += bet * 6
+            wallet += result.prize
             bet = 1
             line3 = line16To21
         } else {
             lossCount++
             lossCountMax = max(lossCountMax, lossCount)
-            bet *= 2
+            bet *= 3
 
             if (ball != 0) {
                 when (lossCount % 3) {
@@ -89,11 +98,15 @@ class Roulette5 : RouletteGame() {
         val line34To36 = 34..36
 
         val line1To6 = line1To3 + line4To6
+        val line4To9 = line4To6 + line7To9
         val line7To12 = line7To9 + line10To12
+        val line10To15 = line10To12 + line13To15
         val line13To18 = line13To15 + line16To18
         val line16To21 = line16To18 + line19To21
         val line19To24 = line19To21 + line22To24
+        val line22To27 = line22To24 + line25To27
         val line25To30 = line25To27 + line28To30
+        val line28To33 = line28To30 + line31To33
         val line31To36 = line31To33 + line34To36
     }
 }

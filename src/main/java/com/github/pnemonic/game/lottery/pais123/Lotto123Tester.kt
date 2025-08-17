@@ -23,7 +23,7 @@ class Lotto123Tester {
     private val lotteryMin: Int = lottery.minimum
     private val lotteryMax: Int = lottery.maximum
     private val numBalls: Int = lottery.numberBalls
-    private val thresholdCandidates: Int = numBalls * THRESHOLD_CANDIDATES_PERCENT / 100
+    private val thresholdCandidates: Int = (numBalls * THRESHOLD_CANDIDATES_PERCENT) / 100
     private val candidates: MutableList<Int> = ArrayList(numBalls)
     private var numStats: Array<Array<NumberStatistic?>>? = null
     private var numGamesTotal = 0
@@ -121,7 +121,7 @@ class Lotto123Tester {
     }
 
     private fun drive(comparator: CompareBy, name: String) {
-        var games: Set<LotteryGame>
+        var games: Collection<LotteryGame>
         var score: Int
         var maxScore = 0
         var totalScore = 0
@@ -146,14 +146,15 @@ class Lotto123Tester {
         println("$name:\t{max. $maxScore;\tave. $aveScore;\twin $winPercent%}")
     }
 
-    protected fun play(numGames: Int): Set<LotteryGame> {
-        val games: MutableSet<LotteryGame> = lottery.play(numGames)
+    private fun play(numGames: Int): List<LotteryGame> {
+        val games = mutableSetOf<LotteryGame>()
+        games.addAll(lottery.play(numGames))
         var gamesSize = games.size
         while (gamesSize in 2 until numGames) {
             games.addAll(lottery.play(numGames - gamesSize))
             gamesSize = games.size
         }
-        return games
+        return games.toList()
     }
 
     /**

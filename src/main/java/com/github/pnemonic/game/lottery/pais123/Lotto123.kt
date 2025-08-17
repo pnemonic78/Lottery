@@ -7,13 +7,9 @@ import kotlin.math.floor
  * Choose numbers for 123 for Israel.
  */
 class Lotto123 : Lottery(SIZE) {
-
     override val minimum: Int = 0
-
     override val maximum: Int = 9
-
     override val bonusMinimum: Int = 0
-
     override val bonusMaximum: Int = 0
 
     companion object {

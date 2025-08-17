@@ -13,8 +13,8 @@ import kotlin.math.min
  * Test various strategies for "777".
  */
 class Lotto777Tester : Tester(Lotto777Sub()) {
-    private val thresholdCandidates: Int = numBalls * THRESHOLD_CANDIDATES_PERCENT / 100
-    private val thresholdCandidatesAnd: Int = min(thresholdCandidates * 3 / 2, numBalls / 2)
+    private val thresholdCandidates: Int = (numBalls * THRESHOLD_CANDIDATES_PERCENT) / 100
+    private val thresholdCandidatesAnd: Int = min((thresholdCandidates * 3) / 2, numBalls / 2)
     private val thresholdCandidatesOr: Int = thresholdCandidates / 2
     private val thresholdCandidatesOr3: Int = thresholdCandidates / 3
     private val thresholdCandidatesOr4: Int = thresholdCandidates / 4
@@ -46,7 +46,7 @@ class Lotto777Tester : Tester(Lotto777Sub()) {
     }
 
     override fun drive(grouping: NumberStatisticGrouping, name: String) {
-        var games: Set<LotteryGame>
+        var games: Collection<LotteryGame>
         var score: Int
         var maxScore = 0
         var totalScore = 0

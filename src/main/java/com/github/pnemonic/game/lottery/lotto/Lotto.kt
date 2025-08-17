@@ -130,7 +130,7 @@ fun main(args: Array<String>) {
         lottery.setCandidates(args[0])
     }
     val plays = Lotto.PLAYS
-    val games: Set<LotteryGame> = lottery.play(plays)
+    val games = lottery.play(plays)
     for (game in games) {
         lottery.print(game)
     }

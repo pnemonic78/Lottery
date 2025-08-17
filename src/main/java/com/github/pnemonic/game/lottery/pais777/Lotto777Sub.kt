@@ -29,15 +29,6 @@ class Lotto777Sub : Lotto777() {
             throw GameException("Maximum-valued ball $candidate less than $MIN_UPPER")
         }
 
-        // Rule: Biggest gap between 2 balls.
-        var l = 0
-        for (l1 in 1 until size) {
-            if (lot[l] + MAX_GAP <= lot[l1]) {
-                throw GameException("Widest gap between " + lot[l] + " and " + lot[l1] + " exceeds " + MAX_GAP)
-            }
-            l++
-        }
-
         // Rule: Minimum number of odd-numbered balls.
         var countOdd = 0
         var countEven = 0
@@ -49,10 +40,10 @@ class Lotto777Sub : Lotto777() {
             }
         }
         if (countOdd < MIN_ODD) {
-            throw GameException("Minimum odds less than $MIN_ODD")
+            throw GameException("Odds less than $MIN_ODD")
         }
         if (countEven < MIN_EVEN) {
-            throw GameException("Minimum evens less than $MIN_EVEN")
+            throw GameException("Evens less than $MIN_EVEN")
         }
 
         // Check that pairs are valid.
@@ -61,7 +52,7 @@ class Lotto777Sub : Lotto777() {
         var pairIndex0: Int
         var pairIndex1: Int
         var pairCount: Int
-        l = 0
+        var l = 0
         for (l1 in 1 until size) {
             ball0 = lot[l]
             ball1 = lot[l1]
@@ -78,7 +69,6 @@ class Lotto777Sub : Lotto777() {
     companion object {
         private const val MAX_LOWER = 23
         private const val MIN_UPPER = 12
-        private const val MAX_GAP = 28
         private const val MIN_ODD = 2
         private const val MIN_EVEN = 2
         private const val MINIMUM = 1
@@ -1394,7 +1384,7 @@ fun main(args: Array<String>) {
         lottery.setCandidates(args[0])
     }
     val plays = Lotto777.PLAYS
-    val games: Set<LotteryGame> = lottery.play(plays)
+    val games = lottery.play(plays)
     for (game in games) {
         lottery.print(game)
     }

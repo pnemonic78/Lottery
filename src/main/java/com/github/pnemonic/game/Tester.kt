@@ -30,8 +30,9 @@ abstract class Tester(protected val lottery: Lottery) {
 
     protected abstract fun drive(grouping: NumberStatisticGrouping, name: String)
 
-    protected fun play(numGames: Int): Set<LotteryGame> {
-        val games = lottery.play(numGames)
+    protected fun play(numGames: Int): List<LotteryGame> {
+        val games = mutableSetOf<LotteryGame>()
+        games.addAll(lottery.play(numGames))
         var gamesSize = games.size
         var retry = 10
         while (gamesSize in 2 until numGames) {
@@ -42,6 +43,6 @@ abstract class Tester(protected val lottery: Lottery) {
                 break
             }
         }
-        return games
+        return games.toList()
     }
 }

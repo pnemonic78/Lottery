@@ -26,7 +26,7 @@ class Lotto777Stats(lottery: Lottery) : LotteryStats(lottery, 17) {
                 println(p)
             }
         }
-        val thresholdCandidates = numBalls * THRESHOLD_CANDIDATES_PERCENT / 100
+        val thresholdCandidates = (numBalls * THRESHOLD_CANDIDATES_PERCENT) / 100
         val thresholdCandidatesOr4 = thresholdCandidates / 4
         val lotteryMin = lottery.minimum
         val lotteryMax = lottery.maximum

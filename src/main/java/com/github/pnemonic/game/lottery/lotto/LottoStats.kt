@@ -16,8 +16,8 @@ class LottoStats(lottery: Lotto) : LotteryStats(lottery, 6) {
 
     override fun printNumberStats() {
         println("max. repeat: $maxRepeat")
-        val thresholdCandidates = numBalls * THRESHOLD_CANDIDATES_PERCENT / 100
-        val thresholdCandidatesAnd = min(thresholdCandidates * 3 / 2, numBalls / 2)
+        val thresholdCandidates = (numBalls * THRESHOLD_CANDIDATES_PERCENT) / 100
+        val thresholdCandidatesAnd = min((thresholdCandidates * 3) / 2, numBalls / 2)
         val lotteryMin = lottery.minimum
         val lotteryMax = lottery.maximum
         val nstatRow: Array<NumberStatistic?> = numStats!![numStats!!.lastIndex]

@@ -15,11 +15,18 @@ abstract class LotteryTester(protected val lottery: Lottery) {
     protected val numBalls: Int = lottery.numberBalls
 
     protected var records: List<LotteryRecord> = emptyList()
+        private set
 
     protected var numStats: Array<Array<NumberStatistic?>> = emptyArray()
 
     @Throws(IOException::class)
-    abstract fun parse(file: File)
+    fun parse(file: File) {
+        val reader: LotteryResultsReader = createResultsReader()
+        records = reader.parse(file).sortedBy { it.id }
+    }
+
+    @Throws(IOException::class)
+    protected abstract fun createResultsReader(): LotteryResultsReader
 
     abstract fun drive()
 

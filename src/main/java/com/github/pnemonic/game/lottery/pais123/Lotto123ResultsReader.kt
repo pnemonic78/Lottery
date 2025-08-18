@@ -40,7 +40,7 @@ class Lotto123ResultsReader : LotteryResultsReader() {
             addRecord(records, record)
         }
         csv.close()
-        return records.sortedBy { it.id }
+        return records
     }
 
     private fun addRecord(records: MutableList<LotteryRecord>, record: LotteryRecord) {

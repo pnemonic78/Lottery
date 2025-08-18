@@ -2,29 +2,29 @@ package com.github.pnemonic.game
 
 enum class NumberStatisticGrouping {
     /**
-     * TODO comment me!
+     * Just regular randomness.
      */
     REGULAR,
 
     /**
-     * TODO comment me!
+     * Least repeated.
      */
     LEAST_REPEAT,
 
     /**
-     * TODO comment me!
+     * Most repeated.
      */
     MOST_REPEAT,
 
     /**
      * Least count.
      */
-    LC,
+    LEAST_COUNT,
 
     /**
      * Most count.
      */
-    MC,
+    MOST_COUNT,
 
     /**
      * TODO comment me!
@@ -34,7 +34,7 @@ enum class NumberStatisticGrouping {
     /**
      * Least used.
      */
-    LU,
+    LEAST_USED,
 
     /**
      * TODO comment me!
@@ -54,7 +54,7 @@ enum class NumberStatisticGrouping {
     /**
      * Most used.
      */
-    MU,
+    MOST_USED,
 
     /**
      * TODO comment me!

@@ -40,7 +40,7 @@ class Lotto777ResultsReader : LotteryResultsReader() {
             records.add(record)
         }
         csv.close()
-        return records.sortedBy { it.id }
+        return records
     }
 
     private fun getCleanColumns(line: CSVLine): Array<String> {

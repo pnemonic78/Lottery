@@ -33,14 +33,14 @@ class Lotto777Tester : LotteryTester(Lotto777()) {
         stats.processRecords(records, false, true)
         numStats = stats.numStats
         for (grouping in NumberStatisticGrouping.entries) {
-            drive(grouping, grouping.name)
+            drive(grouping)
         }
     }
 
-    override fun drive(grouping: NumberStatisticGrouping, name: String) {
-        val numPlays = floor(BUDGET / COST).toInt()
+    override fun drive(grouping: NumberStatisticGrouping) {
+        val numPlays = BUDGET / COST
         var games: Collection<LotteryGame>
-        var wallet = BUDGET
+        var wallet: Long = BUDGET.toLong()
         var recordIndex = 0
         var numGamesTotal = 0
         candidates.clear()
@@ -56,7 +56,7 @@ class Lotto777Tester : LotteryTester(Lotto777()) {
             numGamesTotal += games.size
         }
         val aveScore = wallet / numGamesTotal
-        println("$name:\t{wallet $wallet; ave. $aveScore}")
+        println("$grouping:\t{wallet: $wallet, ave.: $aveScore}")
     }
 
     /**
@@ -170,7 +170,7 @@ class Lotto777Tester : LotteryTester(Lotto777()) {
         /**
          * Budget.
          */
-        internal const val BUDGET = 200.00
+        internal const val BUDGET = 200
     }
 }
 

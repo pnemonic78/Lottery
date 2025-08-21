@@ -1,113 +1,117 @@
 package com.github.pnemonic.game
 
-enum class NumberStatisticGrouping {
+enum class NumberStatisticGrouping(val description: String?) {
     /**
      * Just regular randomness.
      */
-    REGULAR,
+    REGULAR("Regular"),
 
     /**
      * Least repeated.
      */
-    LEAST_REPEAT,
+    LEAST_REPEAT("Least repeated"),
 
     /**
      * Most repeated.
      */
-    MOST_REPEAT,
+    MOST_REPEAT("Most repeated"),
 
     /**
      * Least count.
      */
-    LEAST_COUNT,
+    LEAST_COUNT("Least count."),
 
     /**
      * Most count.
      */
-    MOST_COUNT,
+    MOST_COUNT("Most count."),
 
     /**
      * TODO comment me!
      */
-    MC_LC,
+    MC_LC(null),
 
     /**
      * Least used.
      */
-    LEAST_USED,
+    LEAST_USED("Least used."),
 
     /**
      * TODO comment me!
      */
-    LU_LC,
+    LU_LC(null),
 
     /**
      * TODO comment me!
      */
-    LU_MC,
+    LU_MC(null),
 
     /**
      * TODO comment me!
      */
-    LU_MC_LC,
+    LU_MC_LC(null),
 
     /**
      * Most used.
      */
-    MOST_USED,
+    MOST_USED("Most used."),
 
     /**
      * TODO comment me!
      */
-    MU_LC,
+    MU_LC(null),
 
     /**
      * TODO comment me!
      */
-    MU_MC,
+    MU_MC(null),
 
     /**
      * TODO comment me!
      */
-    MU_MC_LC,
+    MU_MC_LC(null),
 
     /**
      * TODO comment me!
      */
-    MU_LU,
+    MU_LU(null),
 
     /**
      * TODO comment me!
      */
-    MU_LU_LC,
+    MU_LU_LC(null),
 
     /**
      * TODO comment me!
      */
-    MU_LU_MC,
+    MU_LU_MC(null),
 
     /**
      * TODO comment me!
      */
-    MU_LU_MC_LC,
+    MU_LU_MC_LC(null),
 
     /**
      * TODO comment me!
      */
-    LC_AND_LU,
+    LC_AND_LU(null),
 
     /**
      * TODO comment me!
      */
-    LC_AND_MU,
+    LC_AND_MU(null),
 
     /**
      * TODO comment me!
      */
-    MC_AND_LU,
+    MC_AND_LU(null),
 
     /**
      * TODO comment me!
      */
-    MC_AND_MU
+    MC_AND_MU(null);
+
+    override fun toString(): String {
+        return description ?: name
+    }
 }

@@ -82,7 +82,7 @@ open class Lotto777 : Lottery(SIZE) {
         /**
          * Cost per game.
          */
-        const val COST = 7.00
+        const val COST = 7
 
         /** Prize for guessing 3 correct numbers. */
         const val PRIZE_3 = 5
@@ -112,7 +112,7 @@ fun main(args: Array<String>) {
     if (args.isNotEmpty()) {
         lottery.setCandidates(args[0])
     }
-    val numPlays = floor(BUDGET / COST).toInt()
+    val numPlays = BUDGET / COST
     val games = lottery.play(numPlays)
     for (game in games) {
         lottery.print(game)

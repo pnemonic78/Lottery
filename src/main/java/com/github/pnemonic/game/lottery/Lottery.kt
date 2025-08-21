@@ -142,17 +142,13 @@ abstract class Lottery(val size: Int) : GameOfChance<LotteryGuess, LotteryGame> 
         val bag = createBag()
         val size = this.size
         val balls = IntArray(size)
-        var index: Int
-        var candidate: Int
-        for (pick in 0 until size) {
+        for (i in 0 until size) {
             if (bag.isEmpty()) {
                 break
             }
-            index = rnd.nextInt(bag.size)
-            candidate = bag.removeAt(index)
-            balls[pick] = candidate
-            //balls.sort(0, pick + 1)
-            //filter(balls, pick, bag)
+            val pickIndex = rnd.nextInt(bag.size)
+            balls[i] = bag.removeAt(pickIndex)
+            //filter(balls, i)
         }
         balls.sort()
         return LotteryGuess(balls = balls)
@@ -177,7 +173,7 @@ abstract class Lottery(val size: Int) : GameOfChance<LotteryGuess, LotteryGame> 
             .toTypedArray()
         val balls = mutableSetOf<Int>()
         for (token in tokens) {
-            balls.add(Integer.valueOf(token))
+            balls.add(token.toInt())
         }
         setCandidates(balls)
     }

@@ -20,12 +20,13 @@ class LottoResultsReader : LotteryResultsReader() {
         var columns: Array<String>
         var record: LotteryRecord
         val format: DateFormat = SimpleDateFormat("dd/MM/yyyy")
+        val numBalls = NUM_BALLS
 
         // ignore header
         lines.next()
         while (lines.hasNext()) {
             line = lines.next()
-            record = LotteryRecord(NUM_BALLS)
+            record = LotteryRecord(numBalls)
             columns = getCleanColumns(line)
 
             record.id = columns[COLUMN_SEQ].toInt()
@@ -34,31 +35,14 @@ class LottoResultsReader : LotteryResultsReader() {
                 set(Calendar.HOUR, 23)
             }
             var col = COLUMN_BALL
-            for (l in 0 until NUM_BALLS) {
-                record.balls[l] = columns[col++].toInt()
+            for (i in 0 until numBalls) {
+                record.balls[i] = columns[col++].toInt()
             }
             record.bonus = columns[col].toInt()
-            addRecord(records, record)
+            records.add(record)
         }
         csv.close()
         return records
-    }
-
-    private fun addRecord(records: MutableList<LotteryRecord>, record: LotteryRecord) {
-        records.add(record)
-    }
-
-    private fun getCleanColumns(line: CSVLine): Array<String> {
-        val columns = line.columns
-        var col: String
-        for (i in columns.indices) {
-            col = columns[i]
-            if (col.isNotEmpty() && col[0] == '=') {
-                col = col.substring(1)
-            }
-            columns[i] = col
-        }
-        return columns
     }
 
     companion object {

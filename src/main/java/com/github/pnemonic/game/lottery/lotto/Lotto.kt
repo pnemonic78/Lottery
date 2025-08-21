@@ -3,7 +3,8 @@ package com.github.pnemonic.game.lottery.lotto
 import com.github.pnemonic.game.GameException
 import com.github.pnemonic.game.lottery.Lottery
 import com.github.pnemonic.game.lottery.LotteryGame
-import kotlin.math.floor
+import com.github.pnemonic.game.lottery.pais777.Lotto777.Companion.COST
+import com.github.pnemonic.game.lottery.pais777.Lotto777Tester.Companion.BUDGET
 
 /**
  * Choose numbers for Lotto in Israel.
@@ -107,11 +108,6 @@ open class Lotto : Lottery(SIZE) {
          */
         const val COST = 2.90
 
-        /**
-         * Total number of plays per budget. Lotto played in pairs.
-         */
-        val PLAYS = floor(BUDGET / COST).toInt() and 1.inv()
-
         private const val SIZE = 6
         private const val MAX_LOWER = 21
         private const val MIN_UPPER = 13
@@ -129,8 +125,9 @@ fun main(args: Array<String>) {
     if (args.isNotEmpty()) {
         lottery.setCandidates(args[0])
     }
-    val plays = Lotto.PLAYS
-    val games = lottery.play(plays)
+    // Total number of plays per budget. Lotto played in pairs.
+    val numPlays = (BUDGET / COST) and 1.inv()
+    val games = lottery.play(numPlays)
     for (game in games) {
         lottery.print(game)
     }

@@ -34,36 +34,19 @@ class Lotto123ResultsReader : LotteryResultsReader() {
                 time = format.parse(columns[COLUMN_DATE])
             }
             var col = COLUMN_BALL
-            for (l in 0 until numBalls) {
-                record.balls[l] = columns[col--].toInt()
+            for (i in 0 until numBalls) {
+                record.balls[i] = columns[col++].toInt()
             }
-            addRecord(records, record)
+            records.add(record)
         }
         csv.close()
         return records
     }
 
-    private fun addRecord(records: MutableList<LotteryRecord>, record: LotteryRecord) {
-        records.add(record)
-    }
-
-    private fun getCleanColumns(line: CSVLine): Array<String> {
-        val columns = line.columns
-        var col: String
-        for (i in columns.indices) {
-            col = columns[i]
-            if (col.isNotEmpty() && col[0] == '=') {
-                col = col.substring(1)
-            }
-            columns[i] = col
-        }
-        return columns
-    }
-
     companion object {
         private const val COLUMN_DATE = 0
         private const val COLUMN_SEQ = 1
-        private const val COLUMN_BALL = 4
+        private const val COLUMN_BALL = 2
         private const val NUM_BALLS = 3
     }
 }

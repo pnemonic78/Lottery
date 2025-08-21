@@ -30,7 +30,7 @@ abstract class LotteryTester(protected val lottery: Lottery) {
 
     abstract fun drive()
 
-    protected abstract fun drive(grouping: NumberStatisticGrouping, name: String)
+    protected abstract fun drive(grouping: NumberStatisticGrouping)
 
     protected fun play(numGames: Int, record: LotteryRecord): List<LotteryGame> {
         val games = mutableListOf<LotteryGame>()

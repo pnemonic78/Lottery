@@ -16,7 +16,7 @@ import kotlin.math.min
 /**
  * 123 statistics.
  */
-class Lotto123Stats(lottery: Lottery) {
+class Lotto123Stats(private val lottery: Lottery) {
     private var records: List<LotteryRecord>? = null
     private val recStats = mutableListOf<RecordStatistic>()
 
@@ -94,6 +94,7 @@ class Lotto123Stats(lottery: Lottery) {
         processRecordStatistics: Boolean = true,
         processNumberStatistics: Boolean = true
     ) {
+        val numberMin = lottery.minimum
         recStats.clear()
         numberStatistics = Array(records.size) { arrayOfNulls(numBalls) }
         maxLower = Int.MIN_VALUE
@@ -129,14 +130,15 @@ class Lotto123Stats(lottery: Lottery) {
             }
             if (processNumberStatistics) {
                 var col = 0
+                var ball = numberMin
                 for (n in 1..numBalls) {
                     nstat = NumberStatistic()
-                    nstat.id = n
+                    nstat.id = ball++
                     numStatsRow[col] = nstat
                     col++
                 }
-                for (n in record.balls) {
-                    nstat = numStatsRow[n - 1]!!
+                for (ball in record.balls) {
+                    nstat = numStatsRow.first { it!!.id == ball }!!
                     nstat.occur++
                 }
                 if (row_1 >= 0) {

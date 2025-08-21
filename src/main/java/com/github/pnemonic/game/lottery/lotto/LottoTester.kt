@@ -5,7 +5,8 @@ import com.github.pnemonic.game.NumberStatisticGrouping
 import com.github.pnemonic.game.lottery.LotteryGame
 import com.github.pnemonic.game.lottery.LotteryResultsReader
 import com.github.pnemonic.game.lottery.LotteryTester
-import com.github.pnemonic.game.lottery.lotto.Lotto.Companion.PLAYS
+import com.github.pnemonic.game.lottery.pais777.Lotto777.Companion.COST
+import com.github.pnemonic.game.lottery.pais777.Lotto777Tester.Companion.BUDGET
 import java.io.File
 import kotlin.math.max
 import kotlin.math.min
@@ -37,11 +38,11 @@ class LottoTester : LotteryTester(Lotto()) {
         stats.processRecords(records)
         numStats = stats.numStats
         for (grouping in NumberStatisticGrouping.entries) {
-            drive(grouping, grouping.name)
+            drive(grouping)
         }
     }
 
-    override fun drive(grouping: NumberStatisticGrouping, name: String) {
+    override fun drive(grouping: NumberStatisticGrouping) {
         var games: Collection<LotteryGame>
         var score: Int
         var maxScore = 0
@@ -49,10 +50,12 @@ class LottoTester : LotteryTester(Lotto()) {
         var win = 0
         var recordIndex = 0
         var numGamesTotal = 0
+        // Total number of plays per budget. Lotto played in pairs.
+        val numPlays = (BUDGET / COST) and 1.inv()
         candidates.clear()
         for (record in records) {
             lottery.setCandidates(candidates)
-            games = play(PLAYS, record)
+            games = play(numPlays, record)
             for (game in games) {
                 score = record.compareTo(game)
                 totalScore += score
@@ -65,7 +68,7 @@ class LottoTester : LotteryTester(Lotto()) {
         }
         val aveScore = totalScore / numGamesTotal
         val winPercent = (win * 100f) / records.size
-        println("$name:\t{max. $maxScore;\tave. $aveScore;\twin $winPercent%}")
+        println("$grouping:\t{max. $maxScore;\tave. $aveScore;\twin $winPercent%}")
     }
 
     /**

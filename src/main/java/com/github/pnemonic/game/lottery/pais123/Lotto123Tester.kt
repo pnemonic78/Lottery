@@ -6,7 +6,6 @@ import com.github.pnemonic.game.lottery.LotteryResultsReader
 import com.github.pnemonic.game.lottery.LotteryTester
 import com.github.pnemonic.game.lottery.pais123.Lotto123.Companion.COST
 import java.io.File
-import kotlin.math.floor
 
 /**
  * Test various strategies for "123".
@@ -27,89 +26,22 @@ class Lotto123Tester : LotteryTester(Lotto123()) {
         val stats = Lotto123Stats(lottery)
         stats.processRecords(records, false, true)
         numStats = stats.numberStatistics
-        driveRegular()
-        driveLeastCount()
-        driveMostCount()
-        driveLeastUsed()
-        driveMostUsed()
-        // driveLeastRepeated();
-        // driveMostRepeated();
-        driveLeastCountLeastUsed()
-        driveLeastCountMostUsed()
-        driveMostCountLeastUsed()
-        driveMostCountMostUsed()
-        // driveCount223();
-        // driveCount232();
-        // driveCount322();
+        for (grouping in NumberStatisticGrouping.entries) {
+            drive(grouping)
+        }
     }
 
-    private fun driveLeastUsed() {
-        drive(NumberStatisticGrouping.LEAST_USED, "least used")
-    }
-
-    private fun driveMostUsed() {
-        drive(NumberStatisticGrouping.MOST_USED, "most used")
-    }
-
-    private fun driveLeastCount() {
-        drive(NumberStatisticGrouping.LEAST_COUNT, "least count")
-    }
-
-    private fun driveMostCount() {
-        drive(NumberStatisticGrouping.MOST_COUNT, "most count")
-    }
-
-    private fun driveLeastRepeated() {
-        drive(NumberStatisticGrouping.LEAST_REPEAT, "least repeated")
-    }
-
-    private fun driveMostRepeated() {
-        drive(NumberStatisticGrouping.MOST_REPEAT, "most repeated")
-    }
-
-    private fun driveRegular() {
-        drive(NumberStatisticGrouping.REGULAR, "regular")
-    }
-
-//    private fun driveCount223() {
-//        drive(NumberStatisticGrouping.COUNT_223, "2-2-3")
-//    }
-
-//    private fun driveCount232() {
-//        drive(NumberStatisticGrouping.COUNT_232, "2-3-2")
-//    }
-
-//    private fun driveCount322() {
-//        drive(NumberStatisticGrouping.COUNT_322, "3-2-2")
-//    }
-
-    private fun driveLeastCountLeastUsed() {
-        drive(NumberStatisticGrouping.LC_AND_LU, "least count, least used")
-    }
-
-    private fun driveLeastCountMostUsed() {
-        drive(NumberStatisticGrouping.LC_AND_MU, "least count, most used")
-    }
-
-    private fun driveMostCountLeastUsed() {
-        drive(NumberStatisticGrouping.MC_AND_LU, "most count, least used")
-    }
-
-    private fun driveMostCountMostUsed() {
-        drive(NumberStatisticGrouping.MC_AND_MU, "most count, most used")
-    }
-
-    override fun drive(grouping: NumberStatisticGrouping, name: String) {
-        val numPlays = floor(BUDGET / COST).toInt()
+    override fun drive(grouping: NumberStatisticGrouping) {
+        val numPlays = BUDGET / COST
         var games: Collection<LotteryGame>
-        var wallet = BUDGET
+        var wallet: Long = BUDGET.toLong()
         var recordIndex = 0
         var numGamesTotal = 0
         candidates.clear()
         for (record in records) {
             lottery.setCandidates(candidates)
             wallet -= numPlays * COST
-            games = play(numPlays/*, record*/)
+            games = play(numPlays, record)
             for (game in games) {
                 wallet += game.prize
             }
@@ -117,19 +49,8 @@ class Lotto123Tester : LotteryTester(Lotto123()) {
             recordIndex++
             numGamesTotal += games.size
         }
-        val aveScore = wallet / numGamesTotal
-        println("$name:\t{wallet $wallet; ave. $aveScore}")
-    }
-
-    private fun play(numGames: Int): List<LotteryGame> {
-        val games = mutableSetOf<LotteryGame>()
-        games.addAll(lottery.play(numGames))
-        var gamesSize = games.size
-        while (gamesSize in 2 until numGames) {
-            games.addAll(lottery.play(numGames - gamesSize))
-            gamesSize = games.size
-        }
-        return games.toList()
+        val aveScore = wallet.toFloat() / numGamesTotal
+        println("$grouping:\t{wallet: $wallet, ave.: $aveScore}")
     }
 
     /**
@@ -202,7 +123,7 @@ class Lotto123Tester : LotteryTester(Lotto123()) {
         /**
          * Budget.
          */
-        internal const val BUDGET = 20.00
+        internal const val BUDGET = 20
     }
 }
 

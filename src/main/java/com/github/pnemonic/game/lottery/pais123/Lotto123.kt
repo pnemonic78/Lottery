@@ -31,12 +31,12 @@ class Lotto123 : Lottery(SIZE) {
     }
 
     companion object {
-        private const val SIZE = 1
+        private const val SIZE = 3
 
         /**
          * Cost per game.
          */
-        const val COST = 1.00
+        const val COST = 1
 
         /** Prize for guessing the 3 correct numbers. */
         const val PRIZE = 600
@@ -53,7 +53,7 @@ fun main(args: Array<String>) {
     if (args.isNotEmpty()) {
         lottery.setCandidates(args[0])
     }
-    val numPlays = floor(BUDGET / COST).toInt()
+    val numPlays = BUDGET / COST
     val games = lottery.play(numPlays)
     for (game in games) {
         lottery.print(game)

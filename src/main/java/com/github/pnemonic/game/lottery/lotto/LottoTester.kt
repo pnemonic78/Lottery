@@ -38,18 +38,17 @@ class LottoTester : LotteryTester<Lotto>(Lotto()) {
     }
 
     override fun drive(grouping: NumberStatisticGrouping, stats: LotteryStats<Lotto>) {
+        // Total number of plays per budget. Lotto played in pairs.
+        val numPlays = (BUDGET / COST) and 1.inv()
         var games: Collection<LotteryGame>
         var score: Int
         var maxScore = 0
         var totalScore = 0
         var win = 0
-        var recordIndex = 0
+        var recordIndex = -1
         var numGamesTotal = 0
-        // Total number of plays per budget. Lotto played in pairs.
-        val numPlays = (BUDGET / COST) and 1.inv()
-        candidates.clear()
         for (record in records) {
-            lottery.setCandidates(candidates)
+            nextCandidates(grouping, stats, recordIndex)
             games = play(numPlays, record)
             for (game in games) {
                 score = record.compareTo(game)
@@ -57,9 +56,8 @@ class LottoTester : LotteryTester<Lotto>(Lotto()) {
                 maxScore = max(score, maxScore)
             }
             win += if (maxScore == WIN) 1 else 0
-            nextCandidates(grouping, stats, recordIndex)
-            recordIndex++
             numGamesTotal += games.size
+            recordIndex++
         }
         val aveScore = totalScore / numGamesTotal
         val winPercent = (win * 100f) / records.size
@@ -70,10 +68,14 @@ class LottoTester : LotteryTester<Lotto>(Lotto()) {
      * Use statistics to determine the next candidates.
      */
     private fun nextCandidates(grouping: NumberStatisticGrouping, stats: LotteryStats<Lotto>, row: Int) {
+        if (row < 0) {
+            lottery.setCandidates(null)
+            return
+        }
         // Get the statistics.
         val numStats = stats.numberStatistics
         val nstatRow: Array<NumberStatistic> = numStats[row]
-        candidates.clear()
+        val candidates = mutableListOf<Int>()
         var add: Boolean
         for (nstat in nstatRow) {
             add = nstat.repeat < MAX_REPEAT_THRESHOLD
@@ -161,6 +163,7 @@ class LottoTester : LotteryTester<Lotto>(Lotto()) {
                 candidates.add(nstat.id)
             }
         }
+        lottery.setCandidates(candidates)
     }
 
     companion object {

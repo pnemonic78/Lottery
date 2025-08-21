@@ -29,32 +29,32 @@ class NumberStatistic(val id: Int) : Statistic(), Comparable<NumberStatistic> {
     /**
      * Index when sorted by "least count".
      */
-    var indexLeastCount = 0
+    var indexLeastCount = Int.MAX_VALUE
 
     /**
      * TODO comment me!
      */
-    var indexMostCount = 0
+    var indexMostCount = Int.MAX_VALUE
 
     /**
      * TODO comment me!
      */
-    var indexLeastUsed = 0
+    var indexLeastUsed = Int.MAX_VALUE
 
     /**
      * TODO comment me!
      */
-    var indexMostUsed = 0
+    var indexMostUsed = Int.MAX_VALUE
 
     /**
      * TODO comment me!
      */
-    var indexLeastRepeat = 0
+    var indexLeastRepeat = Int.MAX_VALUE
 
     /**
      * TODO comment me!
      */
-    var indexMostRepeat = 0
+    var indexMostRepeat = Int.MAX_VALUE
 
     override fun compareTo(other: NumberStatistic): Int {
         var c = ((usage - other.usage) * 1e+8).toInt()

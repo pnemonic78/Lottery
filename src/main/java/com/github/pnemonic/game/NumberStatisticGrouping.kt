@@ -7,16 +7,6 @@ enum class NumberStatisticGrouping(val description: String?) {
     REGULAR("Regular"),
 
     /**
-     * Most repeated.
-     */
-    MOST_REPEAT("Most repeated"),
-
-    /**
-     * Least repeated.
-     */
-    LEAST_REPEAT("Least repeated"),
-
-    /**
      * Most count.
      */
     MOST_COUNT("Most count."),
@@ -27,14 +17,29 @@ enum class NumberStatisticGrouping(val description: String?) {
     LEAST_COUNT("Least count."),
 
     /**
-     * TODO comment me!
+     * Most repeated.
      */
-    MC_LC(null),
+    MOST_REPEAT("Most repeated"),
+
+    /**
+     * Least repeated.
+     */
+    LEAST_REPEAT("Least repeated"),
+
+    /**
+     * Most used.
+     */
+    MOST_USED("Most used."),
 
     /**
      * Least used.
      */
     LEAST_USED("Least used."),
+
+    /**
+     * TODO comment me!
+     */
+    MC_LC(null),
 
     /**
      * TODO comment me!
@@ -50,11 +55,6 @@ enum class NumberStatisticGrouping(val description: String?) {
      * TODO comment me!
      */
     LU_MC_LC(null),
-
-    /**
-     * Most used.
-     */
-    MOST_USED("Most used."),
 
     /**
      * TODO comment me!

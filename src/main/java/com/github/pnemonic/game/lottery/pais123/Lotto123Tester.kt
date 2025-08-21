@@ -28,37 +28,46 @@ class Lotto123Tester : LotteryTester<Lotto123>(Lotto123()) {
 
     override fun drive(grouping: NumberStatisticGrouping, stats: LotteryStats<Lotto123>) {
         val numPlays = BUDGET / COST
+        var wallet = BUDGET.toLong()
         var games: Collection<LotteryGame>
-        var wallet: Long = BUDGET.toLong()
-        var recordIndex = 0
-        var numGamesTotal = 0
-        candidates.clear()
+        var recordIndex = -1
+        var numPlaysTotal = 0
+        var wins = 0
+
         for (record in records) {
-            lottery.setCandidates(candidates)
+            nextCandidates(grouping, stats, recordIndex)
             wallet -= numPlays * COST
             games = play(numPlays, record)
             for (game in games) {
                 wallet += game.prize
+                if (game.prize > 0) wins++
             }
-            nextCandidates(grouping, stats, recordIndex)
+            numPlaysTotal += games.size
             recordIndex++
-            numGamesTotal += games.size
         }
-        val aveScore = wallet.toFloat() / numGamesTotal
-        println("$grouping:\t{wallet: $wallet, ave.: $aveScore}")
+        val aveScore = wallet.toFloat() / numPlaysTotal
+        println("$grouping:\t{wallet: $wallet, wins: $wins, ave.: $aveScore}")
     }
 
     /**
      * Use statistics to determine the next candidates.
      */
-    private fun nextCandidates(grouping: NumberStatisticGrouping, stats: LotteryStats<Lotto123>, row: Int) {
+    private fun nextCandidates(
+        grouping: NumberStatisticGrouping,
+        stats: LotteryStats<Lotto123>,
+        row: Int
+    ) {
         // Get the statistics.
         val numStats = stats.numberStatistics
+        if (row < 0) {
+            lottery.setCandidates(null)
+            return
+        }
         val nstatRow = numStats[row]
-        candidates.clear()
+        val candidates = mutableListOf<Int>()
         var add: Boolean
         for (nstat in nstatRow) {
-            add = nstat.repeat < MAX_REPEAT_THRESHOLD
+            add = (nstat.repeat < MAX_REPEAT_THRESHOLD)
             when (grouping) {
                 NumberStatisticGrouping.LEAST_COUNT ->
                     add = add && (nstat.indexLeastCount < thresholdCandidates)
@@ -104,6 +113,7 @@ class Lotto123Tester : LotteryTester<Lotto123>(Lotto123()) {
                 candidates.add(nstat.id)
             }
         }
+        lottery.setCandidates(candidates)
     }
 
     companion object {

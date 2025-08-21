@@ -16,8 +16,6 @@ abstract class LotteryTester<L: Lottery>(protected val lottery: L) {
     protected var records: List<LotteryRecord> = emptyList()
         private set
 
-    protected val candidates: MutableList<Int> = ArrayList(numBalls)
-
     @Throws(IOException::class)
     fun parse(file: File) {
         val reader: LotteryResultsReader = createResultsReader()
@@ -44,7 +42,8 @@ abstract class LotteryTester<L: Lottery>(protected val lottery: L) {
         var gamesSize = 0
         var retry = 10
         while (gamesSize < numGames) {
-            games.addAll(lottery.play(numGames - gamesSize, record))
+            val played = lottery.play(numGames - gamesSize, record)
+            games.addAll(played)
             gamesSize = games.size
             retry--
             if (retry == 0) {

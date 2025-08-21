@@ -28,7 +28,7 @@ open class LotteryGame(size: Int) : GameOfChanceResult(), Comparable<LotteryGame
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is LotteryGame) return false
-        return this.balls.contentEquals(other.balls) && (bonus == other.bonus)
+        return (this.balls contentEquals other.balls) && (bonus == other.bonus)
     }
 
     override fun hashCode(): Int {

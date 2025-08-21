@@ -73,6 +73,12 @@ abstract class LotteryStats<L : Lottery>(protected val lottery: L) {
      */
     protected var numPairs: Array<IntArray>? = null
 
+    val byId: CompareNumber = CompareById(false)
+    val byLeastCount: CompareNumber = CompareByCount(false)
+    val byMostCount: CompareNumber = CompareByCount(true)
+    val byLeastUsed: CompareNumber = CompareByUsage(false)
+    val byMostUsed: CompareNumber = CompareByUsage(true)
+
     protected abstract fun createResultsReader(): LotteryResultsReader
 
     @Throws(IOException::class)
@@ -108,9 +114,6 @@ abstract class LotteryStats<L : Lottery>(protected val lottery: L) {
         var nstatPrev: NumberStatistic
         var numStatsRow: Array<NumberStatistic>
         var numStatsRowPrev: Array<NumberStatistic>? = null
-        val byLeastCount: CompareNumber = CompareByCount(false)
-        val byLeastUsed: CompareNumber = CompareByUsage(false)
-        val byId: CompareNumber = CompareById(false)
         var row = 0
 
         for (record in records) {
@@ -172,6 +175,7 @@ abstract class LotteryStats<L : Lottery>(protected val lottery: L) {
                     nstat.indexLeastCount = col
                     nstat.indexMostCount = numBalls - col - 1
                 }
+                numStatsRow.sortWith(byLeastUsed)
                 for (col in 0 until numBalls) {
                     nstat = numStatsRow[col]
                     nstat.indexLeastUsed = col

@@ -1,7 +1,9 @@
 package com.github.pnemonic.game.lottery
 
 import com.github.game.GameOfChance
+import com.github.pnemonic.choose
 import com.github.pnemonic.game.GameException
+import kotlin.math.min
 import kotlin.random.Random
 
 /**
@@ -41,6 +43,7 @@ abstract class Lottery(val size: Int) : GameOfChance<LotteryGuess, LotteryGame> 
 
     override fun play(guess: LotteryGuess): LotteryGame {
         val game = LotteryGame(size)
+        game.guess = guess
         playBonus(game)
         filterGame(game)
         calculatePrizes(guess, game)
@@ -48,6 +51,7 @@ abstract class Lottery(val size: Int) : GameOfChance<LotteryGuess, LotteryGame> 
     }
 
     override fun play(guess: LotteryGuess, result: LotteryGame) {
+        result.guess = guess
         calculatePrizes(guess, result)
     }
 
@@ -94,11 +98,18 @@ abstract class Lottery(val size: Int) : GameOfChance<LotteryGuess, LotteryGame> 
 
     fun play(numGames: Int, record: LotteryGame): List<LotteryGame> {
         require(numGames > 0) { "Invalid number of games $numGames" }
+        val maxPossibleGuesses = choose(candidates.size, size)
+        val maxNumGames = min(numGames, maxPossibleGuesses)
+        val guesses = mutableSetOf<LotteryGuess>()
         val games = mutableListOf<LotteryGame>()
         var retry = 0
-        while (games.size < numGames) {
+        while (games.size < maxNumGames) {
             try {
                 val guess = guess()
+                if (guesses.contains(guess)) {
+                    continue
+                }
+                guesses.add(guess)
                 val game = record.copy()
                 play(guess, game)
                 games.add(game)
@@ -110,7 +121,7 @@ abstract class Lottery(val size: Int) : GameOfChance<LotteryGuess, LotteryGame> 
                 }
             }
         }
-        return games
+        return games.toList()
     }
 
     fun play(numGames: Int): List<LotteryGame> {

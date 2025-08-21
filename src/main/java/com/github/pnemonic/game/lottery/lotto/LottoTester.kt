@@ -4,6 +4,7 @@ import com.github.pnemonic.game.NumberStatistic
 import com.github.pnemonic.game.NumberStatisticGrouping
 import com.github.pnemonic.game.lottery.LotteryGame
 import com.github.pnemonic.game.lottery.LotteryResultsReader
+import com.github.pnemonic.game.lottery.LotteryStats
 import com.github.pnemonic.game.lottery.LotteryTester
 import com.github.pnemonic.game.lottery.pais777.Lotto777.Companion.COST
 import com.github.pnemonic.game.lottery.pais777.Lotto777Tester.Companion.BUDGET
@@ -14,13 +15,12 @@ import kotlin.math.min
 /**
  * Test various strategies for "Lotto".
  */
-class LottoTester : LotteryTester(Lotto()) {
+class LottoTester : LotteryTester<Lotto>(Lotto()) {
     private val thresholdCandidates: Int = (numBalls * THRESHOLD_CANDIDATES_PERCENT) / 100
     private val thresholdCandidatesAnd: Int = min((thresholdCandidates * 3) / 2, numBalls / 2)
     private val thresholdCandidatesOr: Int = thresholdCandidates / 2
     private val thresholdCandidatesOr3: Int = thresholdCandidates / 3
     private val thresholdCandidatesOr4: Int = thresholdCandidates / 4
-    private val candidates: MutableList<Int> = ArrayList(numBalls)
 
     /**
      * Creates a new tester.
@@ -33,16 +33,11 @@ class LottoTester : LotteryTester(Lotto()) {
         return LottoResultsReader()
     }
 
-    override fun drive() {
-        val stats = LottoStats(Lotto())
-        stats.processRecords(records)
-        numStats = stats.numStats
-        for (grouping in NumberStatisticGrouping.entries) {
-            drive(grouping)
-        }
+    override fun createStats(lottery: Lotto): LotteryStats<Lotto> {
+        return LottoStats(lottery)
     }
 
-    override fun drive(grouping: NumberStatisticGrouping) {
+    override fun drive(grouping: NumberStatisticGrouping, stats: LotteryStats<Lotto>) {
         var games: Collection<LotteryGame>
         var score: Int
         var maxScore = 0
@@ -62,7 +57,7 @@ class LottoTester : LotteryTester(Lotto()) {
                 maxScore = max(score, maxScore)
             }
             win += if (maxScore == WIN) 1 else 0
-            nextCandidates(grouping, recordIndex)
+            nextCandidates(grouping, stats, recordIndex)
             recordIndex++
             numGamesTotal += games.size
         }
@@ -74,13 +69,13 @@ class LottoTester : LotteryTester(Lotto()) {
     /**
      * Use statistics to determine the next candidates.
      */
-    private fun nextCandidates(grouping: NumberStatisticGrouping, row: Int) {
+    private fun nextCandidates(grouping: NumberStatisticGrouping, stats: LotteryStats<Lotto>, row: Int) {
         // Get the statistics.
-        val nstatRow: Array<NumberStatistic?> = numStats[row]
+        val numStats = stats.numberStatistics
+        val nstatRow: Array<NumberStatistic> = numStats[row]
         candidates.clear()
         var add: Boolean
-        for (nr in nstatRow) {
-            val nstat = nr!!
+        for (nstat in nstatRow) {
             add = nstat.repeat < MAX_REPEAT_THRESHOLD
             when (grouping) {
                 NumberStatisticGrouping.REGULAR -> {}

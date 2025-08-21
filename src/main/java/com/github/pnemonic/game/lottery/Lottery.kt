@@ -10,10 +10,6 @@ import kotlin.random.Random
 abstract class Lottery(val size: Int) : GameOfChance<LotteryGuess, LotteryGame> {
     private val candidates = mutableSetOf<Int>()
 
-    init {
-        setCandidates(emptyList<Int>())
-    }
-
     abstract val minimum: Int
 
     abstract val maximum: Int
@@ -22,8 +18,15 @@ abstract class Lottery(val size: Int) : GameOfChance<LotteryGuess, LotteryGame> 
 
     abstract val bonusMaximum: Int
 
+    /**
+     * The number of possible balls.
+     */
     val numberBalls: Int
         get() = maximum - minimum + 1
+
+    init {
+        setCandidates(emptyList<Int>())
+    }
 
     /**
      * Choose some numbers.

@@ -7,7 +7,6 @@ import com.github.pnemonic.game.lottery.LotteryGuess
 import com.github.pnemonic.game.lottery.pais777.Lotto777.Companion.COST
 import com.github.pnemonic.game.lottery.pais777.Lotto777Tester.Companion.BUDGET
 import com.github.pnemonic.isEven
-import kotlin.math.floor
 
 /**
  * Choose numbers for 777 in Israel.

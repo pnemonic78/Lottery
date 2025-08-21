@@ -7,24 +7,24 @@ enum class NumberStatisticGrouping(val description: String?) {
     REGULAR("Regular"),
 
     /**
-     * Least repeated.
-     */
-    LEAST_REPEAT("Least repeated"),
-
-    /**
      * Most repeated.
      */
     MOST_REPEAT("Most repeated"),
 
     /**
-     * Least count.
+     * Least repeated.
      */
-    LEAST_COUNT("Least count."),
+    LEAST_REPEAT("Least repeated"),
 
     /**
      * Most count.
      */
     MOST_COUNT("Most count."),
+
+    /**
+     * Least count.
+     */
+    LEAST_COUNT("Least count."),
 
     /**
      * TODO comment me!

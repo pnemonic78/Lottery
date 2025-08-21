@@ -1,11 +1,10 @@
 package com.github.pnemonic.game.lottery
 
-import com.github.pnemonic.game.NumberStatistic
 import com.github.pnemonic.game.NumberStatisticGrouping
 import java.io.File
 import java.io.IOException
 
-abstract class LotteryTester(protected val lottery: Lottery) {
+abstract class LotteryTester<L: Lottery>(protected val lottery: L) {
     protected val lotterySize: Int = lottery.size
 
     protected val lotteryMin: Int = lottery.minimum
@@ -17,7 +16,7 @@ abstract class LotteryTester(protected val lottery: Lottery) {
     protected var records: List<LotteryRecord> = emptyList()
         private set
 
-    protected var numStats: Array<Array<NumberStatistic?>> = emptyArray()
+    protected val candidates: MutableList<Int> = ArrayList(numBalls)
 
     @Throws(IOException::class)
     fun parse(file: File) {
@@ -28,9 +27,17 @@ abstract class LotteryTester(protected val lottery: Lottery) {
     @Throws(IOException::class)
     protected abstract fun createResultsReader(): LotteryResultsReader
 
-    abstract fun drive()
+    fun drive() {
+        val stats = createStats(lottery)
+        stats.processRecords(records, false, true)
+        for (grouping in NumberStatisticGrouping.entries) {
+            drive(grouping, stats)
+        }
+    }
 
-    protected abstract fun drive(grouping: NumberStatisticGrouping)
+    protected abstract fun createStats(lottery: L): LotteryStats<L>
+
+    protected abstract fun drive(grouping: NumberStatisticGrouping, stats: LotteryStats<L>)
 
     protected fun play(numGames: Int, record: LotteryRecord): List<LotteryGame> {
         val games = mutableListOf<LotteryGame>()

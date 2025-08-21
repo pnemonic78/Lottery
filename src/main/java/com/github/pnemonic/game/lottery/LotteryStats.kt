@@ -1,63 +1,57 @@
 package com.github.pnemonic.game.lottery
 
 import com.github.pnemonic.game.CompareByCount
+import com.github.pnemonic.game.CompareById
 import com.github.pnemonic.game.CompareByUsage
 import com.github.pnemonic.game.CompareNumber
 import com.github.pnemonic.game.NumberStatistic
 import com.github.pnemonic.game.RecordStatistic
 import com.github.pnemonic.isEven
 import java.io.File
+import java.io.IOException
 import kotlin.math.max
 import kotlin.math.min
 
-abstract class LotteryStats(
-    protected val lottery: Lottery,
-    /**
-     * The number of balls per record.
-     */
-    protected val numRecordBalls: Int
-) {
-    protected var records: List<LotteryRecord>? = null
+abstract class LotteryStats<L : Lottery>(protected val lottery: L) {
+
+    protected val lotteryMin: Int = lottery.minimum
+    protected val lotteryMax: Int = lottery.maximum
+
+    protected val numBalls: Int = lottery.numberBalls
+
     protected val recStats = mutableListOf<RecordStatistic>()
 
     /**
      * Get the number statistics. Each row represents a game. Each column
      * represents a ball.
      */
-    var numStats: Array<Array<NumberStatistic?>> = emptyArray()
-    //FIXME protected set
+    var numberStatistics: Array<Array<NumberStatistic>> = emptyArray()
+        private set
 
     /**
      * The upper bound of the minimum balls.
      */
-    protected var maxLower = 0
+    protected var maxLower = Int.MIN_VALUE
 
     /**
      * The lower bound of the maximum balls.
      */
-    protected var minUpper = 0
+    protected var minUpper = Int.MAX_VALUE
 
     /**
      * The widest gap between any 2 balls.
      */
     protected var maxGap = 0
-    protected val lotteryMin: Int = lottery.minimum
-    protected val lotteryMax: Int = lottery.maximum
-
-    /**
-     * The number of balls.
-     */
-    protected val numBalls: Int = lottery.numberBalls
 
     /**
      * The lowest number of odd balls.
      */
-    protected var minOdd = 0
+    protected var minOdd = Int.MAX_VALUE
 
     /**
      * The lowest number of even balls.
      */
-    protected var minEven = 0
+    protected var minEven = Int.MAX_VALUE
 
     /**
      * The highest number of odd balls.
@@ -81,16 +75,13 @@ abstract class LotteryStats(
 
     protected abstract fun createResultsReader(): LotteryResultsReader
 
+    @Throws(IOException::class)
     fun parse(file: File) {
         val reader = createResultsReader()
-        try {
-            records = reader.parse(file)
-            processRecords(records!!)
-            printRecordStats()
-            printNumberStats()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        val records = reader.parse(file)
+        processRecords(records)
+        printRecordStats()
+        printNumberStats()
     }
 
     fun processRecords(
@@ -99,7 +90,8 @@ abstract class LotteryStats(
         processNumberStatistics: Boolean = true
     ) {
         recStats.clear()
-        numStats = Array(records.size) { arrayOfNulls(numBalls) }
+        numberStatistics =
+            Array(records.size) { Array(numBalls) { NumberStatistic(it + lotteryMin) } }
         maxLower = Int.MIN_VALUE
         minUpper = Int.MAX_VALUE
         maxGap = 0
@@ -110,25 +102,26 @@ abstract class LotteryStats(
         maxRepeat = 0
         val numPairs = Array(numBalls) { IntArray(numBalls) }
         this.numPairs = numPairs
-        val numStats = this.numStats
+        val numStats = this.numberStatistics
         var rstat: RecordStatistic
         var nstat: NumberStatistic
         var nstatPrev: NumberStatistic
-        var numStatsRow: Array<NumberStatistic?>
-        var numStatsRow_1: Array<NumberStatistic?>
-        val numStatsRowSorted = arrayOfNulls<NumberStatistic>(numBalls)
-        val forLeastCount: CompareNumber = CompareByCount(false)
-        val forLeastUsed: CompareNumber = CompareByUsage(false)
+        var numStatsRow: Array<NumberStatistic>
+        var numStatsRowPrev: Array<NumberStatistic>? = null
+        val byLeastCount: CompareNumber = CompareByCount(false)
+        val byLeastUsed: CompareNumber = CompareByUsage(false)
+        val byId: CompareNumber = CompareById(false)
         var row = 0
-        var row_1: Int
-        var col: Int
+
         for (record in records) {
+            val recordBalls = record.balls
+            val numRecordBalls = recordBalls.size
             numStatsRow = numStats[row]
-            row_1 = row - 1
+
             if (processRecordStatistics) {
-                maxLower = max(maxLower, record.balls[0])
+                maxLower = max(maxLower, recordBalls[0])
                 for (i in numRecordBalls - 1 downTo 1) {
-                    val n = record.balls[i]
+                    val n = recordBalls[i]
                     if (n in lotteryMin..lotteryMax) {
                         minUpper = min(minUpper, n)
                         break
@@ -137,34 +130,68 @@ abstract class LotteryStats(
                 rstat = addStat(record)
                 for (i in rstat.gap.indices) {
                     val gap = rstat.gap[i]
-                    val n0 = record.balls[i]
+                    val n0 = recordBalls[i]
                     val n1 = n0 + gap
                     if (n0 in lotteryMin..lotteryMax && n1 in lotteryMin..lotteryMax) {
                         maxGap = max(maxGap, gap)
                     }
                 }
             }
+
             if (processNumberStatistics) {
-                col = 0
-                for (n in 1..numBalls) {
-                    nstat = NumberStatistic()
-                    nstat.id = n
-                    numStatsRow[col] = nstat
-                    col++
+                for (ball in recordBalls) {
+                    val col = ball - lotteryMin
+                    nstat = numStatsRow[col]
+                    nstat.countGame++
                 }
+                if (numStatsRowPrev != null) {
+                    for (col in 0 until numBalls) {
+                        nstat = numStatsRow[col]
+                        nstatPrev = numStatsRowPrev[col]
+                        nstat.count = nstatPrev.count + nstat.countGame
+                        nstat.usage = (nstatPrev.usage + nstat.countGame) / 2
+                        if (nstat.countGame > 0) {
+                            nstat.repeat = nstatPrev.repeat + nstat.countGame
+                        }
+                        nstat.maxRepeat = max(nstat.repeat, nstatPrev.maxRepeat)
+                        maxRepeat = max(maxRepeat, nstat.maxRepeat)
+                    }
+                } else {
+                    for (col in 0 until numBalls) {
+                        nstat = numStatsRow[col]
+                        nstat.count += nstat.countGame
+                        nstat.usage = nstat.countGame.toFloat()
+                        nstat.repeat = nstat.countGame
+                        nstat.maxRepeat = max(nstat.repeat, nstat.maxRepeat)
+                        maxRepeat = max(maxRepeat, nstat.maxRepeat)
+                    }
+                }
+                numStatsRow.sortWith(byLeastCount)
+                for (col in 0 until numBalls) {
+                    nstat = numStatsRow[col]
+                    nstat.indexLeastCount = col
+                    nstat.indexMostCount = numBalls - col - 1
+                }
+                for (col in 0 until numBalls) {
+                    nstat = numStatsRow[col]
+                    nstat.indexLeastUsed = col
+                    nstat.indexMostUsed = numBalls - col - 1
+                }
+                numStatsRow.sortWith(byId)
+
                 var col2: Int
                 var pair: Int
                 var pair2: Int
                 var pairIndex: Int
                 var pairIndex2: Int
-                col = 0
-                while (col < record.balls.size) {
-                    pair = record.balls[col]
+                var col = 0
+                while (col < recordBalls.size) {
+                    pair = recordBalls[col]
                     if (pair in lotteryMin..lotteryMax) {
                         pairIndex = pair - lotteryMin
                         col2 = col + 1
-                        if (col2 < record.balls.size) {
-                            pair2 = record.balls[col2]
+                        if (col2 < recordBalls.size) {
+                            pair2 = recordBalls[col2]
                             if (pair2 in lotteryMin..lotteryMax) {
                                 pairIndex2 = pair2 - lotteryMin
                                 numPairs[pairIndex][pairIndex2]++
@@ -174,107 +201,40 @@ abstract class LotteryStats(
                     }
                     col++
                 }
-                for (n in record.balls) {
-                    if (n in lotteryMin..lotteryMax) {
-                        col = n - lotteryMin
-                        nstat = numStatsRow[col]!!
-                        nstat.occur++
-                    }
-                }
-                if (row_1 >= 0) {
-                    numStatsRow_1 = numStats[row_1]
-                    col = 0
-                    var n = 1
-                    while (n <= numBalls) {
-                        nstat = numStatsRow[col]!!
-                        nstatPrev = numStatsRow_1[col]!!
-                        nstat.count = nstatPrev.count + nstat.occur
-                        nstat.usage = (nstatPrev.usage + nstat.occur) / 2
-                        if (nstat.occur > 0) {
-                            nstat.repeat = nstatPrev.repeat + nstat.occur
-                        }
-                        nstat.maxRepeat = max(nstat.repeat, nstatPrev.maxRepeat)
-                        maxRepeat = max(maxRepeat, nstat.maxRepeat)
-                        col++
-                        n++
-                    }
-                } else {
-                    col = 0
-                    var n = 1
-                    while (n <= numBalls) {
-                        nstat = numStatsRow[col]!!
-                        nstat.count += nstat.occur
-                        nstat.usage = nstat.occur.toFloat()
-                        nstat.repeat = nstat.occur
-                        nstat.maxRepeat = max(nstat.repeat, nstat.maxRepeat)
-                        maxRepeat = max(maxRepeat, nstat.maxRepeat)
-                        col++
-                        n++
-                    }
-                }
-                numStatsRow.copyInto(numStatsRowSorted, 0, 0, numBalls)
-                numStatsRowSorted.sortWith(forLeastCount)
-                col = 0
-                run {
-                    var n = 1
-                    while (n <= numBalls) {
-                        nstat = numStatsRowSorted[col]!!
-                        nstat.indexLeastCount = col
-                        nstat.indexMostCount = numBalls - col - 1
-                        col++
-                        n++
-                    }
-                }
-                numStatsRowSorted.sortWith(forLeastUsed)
-                col = 0
-                var n = 1
-                while (n <= numBalls) {
-                    nstat = numStatsRowSorted[col]!!
-                    nstat.indexLeastUsed = col
-                    nstat.indexMostUsed = numBalls - col - 1
-                    col++
-                    n++
-                }
             }
+            numStatsRowPrev = numStatsRow
             row++
         }
     }
 
     protected fun addStat(record: LotteryRecord): RecordStatistic {
-        val size = numRecordBalls
+        val recordBalls = record.balls
+        val size = recordBalls.size
         val sizeConsecutives = size - 1
-        val rstat = RecordStatistic(sizeConsecutives)
-        rstat.record = record
+        val rstat = RecordStatistic(record)
         val con = BooleanArray(sizeConsecutives)
-        run {
-            var i = 0
-            var i1 = 1
-            while (i1 <= con.size) {
-                con[i] = record.balls[i] + 1 == record.balls[i1]
-                rstat.gap[i] = record.balls[i1] - record.balls[i]
-                i++
-                i1++
-            }
-        }
-        var c: Boolean
         var i = 0
-        var i1 = 1
-        while (i1 < size) {
-            c = true
+        for (i1 in 1..con.size) {
+            con[i] = recordBalls[i] + 1 == recordBalls[i1]
+            rstat.gap[i] = recordBalls[i1] - recordBalls[i]
+            i++
+        }
+        i = 0
+        for (i1 in 1 until size) {
+            var c = true
             var j = i
             var j1 = j + 1
             var s = 0
             while (c && j1 < size) {
-                c = c && con[j]
+                c = con[j]
                 rstat.consecutive[s] += if (c) 1 else 0
                 j++
                 j1++
                 s++
             }
             i++
-            i1++
         }
-        for (ball in record.balls) {
+        for (ball in recordBalls) {
             if (ball.isEven) {
                 rstat.even++
             } else {
@@ -298,7 +258,7 @@ abstract class LotteryStats(
         println("min. even: $minEven")
         println("max. even: $maxEven")
         for (rstat in recStats) {
-            print(rstat.record!!.id)
+            print(rstat.record.id)
             for (c in rstat.consecutive) {
                 print("\t$c")
             }

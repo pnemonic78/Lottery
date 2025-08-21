@@ -9,7 +9,7 @@ import kotlin.math.min
 /**
  * Lotto statistics.
  */
-class LottoStats(lottery: Lotto) : LotteryStats(lottery, 6) {
+class LottoStats(lottery: Lotto) : LotteryStats<Lotto>(lottery) {
     override fun createResultsReader(): LotteryResultsReader {
         return LottoResultsReader()
     }
@@ -18,18 +18,17 @@ class LottoStats(lottery: Lotto) : LotteryStats(lottery, 6) {
         println("max. repeat: $maxRepeat")
         val thresholdCandidates = (numBalls * THRESHOLD_CANDIDATES_PERCENT) / 100
         val thresholdCandidatesAnd = min((thresholdCandidates * 3) / 2, numBalls / 2)
-        val lotteryMin = lottery.minimum
-        val lotteryMax = lottery.maximum
-        val nstatRow: Array<NumberStatistic?> = numStats[numStats.lastIndex]
+        val numStats = numberStatistics
+        val nstatRow: Array<NumberStatistic> = numStats[numStats.lastIndex]
         val asJava = StringBuilder()
         var add: Boolean
-        for (nr in nstatRow) {
-            val nstat = nr!!
+        for (nstat in nstatRow) {
             println(nstat)
             add = nstat.id >= lotteryMin && nstat.id <= lotteryMax
             add = add && (nstat.repeat < maxRepeat)
             // Copy from Tester#nextCandidates and paste here:
-            add = add && (nstat.indexLeastCount < thresholdCandidatesAnd && nstat.indexMostUsed < thresholdCandidatesAnd)
+            add =
+                add && (nstat.indexLeastCount < thresholdCandidatesAnd && nstat.indexMostUsed < thresholdCandidatesAnd)
             if (add) {
                 if (asJava.isNotEmpty()) {
                     asJava.append(',')

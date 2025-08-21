@@ -3,6 +3,7 @@ package com.github.pnemonic.game.lottery.pais123
 import com.github.pnemonic.game.NumberStatisticGrouping
 import com.github.pnemonic.game.lottery.LotteryGame
 import com.github.pnemonic.game.lottery.LotteryResultsReader
+import com.github.pnemonic.game.lottery.LotteryStats
 import com.github.pnemonic.game.lottery.LotteryTester
 import com.github.pnemonic.game.lottery.pais123.Lotto123.Companion.COST
 import java.io.File
@@ -10,9 +11,8 @@ import java.io.File
 /**
  * Test various strategies for "123".
  */
-class Lotto123Tester : LotteryTester(Lotto123()) {
+class Lotto123Tester : LotteryTester<Lotto123>(Lotto123()) {
     private val thresholdCandidates: Int = (numBalls * THRESHOLD_CANDIDATES_PERCENT) / 100
-    private val candidates: MutableList<Int> = ArrayList(numBalls)
 
     init {
         require(thresholdCandidates >= lotterySize) { "too few candidates" }
@@ -22,16 +22,11 @@ class Lotto123Tester : LotteryTester(Lotto123()) {
         return Lotto123ResultsReader()
     }
 
-    override fun drive() {
-        val stats = Lotto123Stats(lottery)
-        stats.processRecords(records, false, true)
-        numStats = stats.numberStatistics
-        for (grouping in NumberStatisticGrouping.entries) {
-            drive(grouping)
-        }
+    override fun createStats(lottery: Lotto123): LotteryStats<Lotto123> {
+        return Lotto123Stats(lottery)
     }
 
-    override fun drive(grouping: NumberStatisticGrouping) {
+    override fun drive(grouping: NumberStatisticGrouping, stats: LotteryStats<Lotto123>) {
         val numPlays = BUDGET / COST
         var games: Collection<LotteryGame>
         var wallet: Long = BUDGET.toLong()
@@ -45,7 +40,7 @@ class Lotto123Tester : LotteryTester(Lotto123()) {
             for (game in games) {
                 wallet += game.prize
             }
-            nextCandidates(grouping, recordIndex)
+            nextCandidates(grouping, stats, recordIndex)
             recordIndex++
             numGamesTotal += games.size
         }
@@ -56,13 +51,13 @@ class Lotto123Tester : LotteryTester(Lotto123()) {
     /**
      * Use statistics to determine the next candidates.
      */
-    private fun nextCandidates(grouping: NumberStatisticGrouping, row: Int) {
+    private fun nextCandidates(grouping: NumberStatisticGrouping, stats: LotteryStats<Lotto123>, row: Int) {
         // Get the statistics.
+        val numStats = stats.numberStatistics
         val nstatRow = numStats[row]
         candidates.clear()
         var add: Boolean
-        for (nr in nstatRow) {
-            val nstat = nr!!
+        for (nstat in nstatRow) {
             add = nstat.repeat < MAX_REPEAT_THRESHOLD
             when (grouping) {
                 NumberStatisticGrouping.LEAST_COUNT ->

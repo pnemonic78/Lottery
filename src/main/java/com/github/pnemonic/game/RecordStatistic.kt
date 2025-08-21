@@ -2,8 +2,7 @@ package com.github.pnemonic.game
 
 import com.github.pnemonic.game.lottery.LotteryRecord
 
-class RecordStatistic(size: Int) : Statistic() {
-    var record: LotteryRecord? = null
+class RecordStatistic(val record: LotteryRecord) : Statistic() {
 
     /**
      * Number of <tt>index + 2</tt> consecutives.
@@ -26,7 +25,8 @@ class RecordStatistic(size: Int) : Statistic() {
     var even = 0
 
     init {
-        consecutive = IntArray(size)
-        gap = IntArray(size)
+        val sizeConsecutives = record.balls.size - 1
+        consecutive = IntArray(sizeConsecutives)
+        gap = IntArray(sizeConsecutives)
     }
 }

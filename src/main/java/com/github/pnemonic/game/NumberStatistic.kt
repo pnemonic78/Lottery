@@ -1,15 +1,10 @@
 package com.github.pnemonic.game
 
-class NumberStatistic : Statistic(), Comparable<NumberStatistic> {
-    /**
-     * The ball value.
-     */
-    var id = 0
-
+class NumberStatistic(val id: Int) : Statistic(), Comparable<NumberStatistic> {
     /**
      * Number of occurrences of this ball in the game.
      */
-    var occur = 0
+    var countGame = 0
 
     /**
      * Total number of occurrences.
@@ -74,12 +69,13 @@ class NumberStatistic : Statistic(), Comparable<NumberStatistic> {
     }
 
     override fun toString(): String {
-        val buf = StringBuilder()
-        buf.append(id)
-        buf.append('\t').append(count)
-        buf.append('\t').append(usage)
-        buf.append('\t').append(repeat)
-        buf.append('\t').append(maxRepeat)
-        return buf.toString()
+        return StringBuilder()
+            .append(id)
+            .append(", ").append(countGame)
+            .append(", ").append(count)
+            .append(", ").append(usage)
+            .append(", ").append(repeat)
+            .append(", ").append(maxRepeat)
+            .toString()
     }
 }

@@ -98,7 +98,7 @@ abstract class Lottery(val size: Int) : GameOfChance<LotteryGuess, LotteryGame> 
 
     fun play(numGames: Int, record: LotteryGame): List<LotteryGame> {
         require(numGames > 0) { "Invalid number of games $numGames" }
-        val maxPossibleGuesses = choose(candidates.size, size)
+        val maxPossibleGuesses = choose(candidates.size, size).toInt()
         val maxNumGames = min(numGames, maxPossibleGuesses)
         val guesses = mutableSetOf<LotteryGuess>()
         val games = mutableListOf<LotteryGame>()

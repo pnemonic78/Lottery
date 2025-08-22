@@ -13,6 +13,7 @@ import java.io.File
  */
 class Lotto123Tester : LotteryTester<Lotto123>(Lotto123()) {
     private val thresholdCandidates: Int = (numBalls * THRESHOLD_CANDIDATES_PERCENT) / 100
+    private val thresholdCandidatesOr: Int = thresholdCandidates / 2
 
     init {
         require(thresholdCandidates >= lotterySize) { "too few candidates" }
@@ -36,8 +37,8 @@ class Lotto123Tester : LotteryTester<Lotto123>(Lotto123()) {
 
         for (record in records) {
             nextCandidates(grouping, stats, recordIndex)
-            wallet -= numPlays * COST
             games = play(numPlays, record)
+            wallet -= games.size * COST
             for (game in games) {
                 wallet += game.prize
                 if (game.prize > 0) wins++
@@ -57,12 +58,12 @@ class Lotto123Tester : LotteryTester<Lotto123>(Lotto123()) {
         stats: LotteryStats<Lotto123>,
         row: Int
     ) {
-        // Get the statistics.
-        val numStats = stats.numberStatistics
         if (row < 0) {
             lottery.setCandidates(null)
             return
         }
+        // Get the statistics.
+        val numStats = stats.numberStatistics
         val nstatRow = numStats[row]
         val candidates = mutableListOf<Int>()
         var add: Boolean
@@ -107,6 +108,57 @@ class Lotto123Tester : LotteryTester<Lotto123>(Lotto123()) {
                     add = add && (nstat.indexMostUsed < thresholdCandidates)
                 }
 
+                NumberStatisticGrouping.LU_LC ->
+                    add = add && (nstat.indexLeastUsed < thresholdCandidatesOr ||
+                            nstat.indexLeastCount < thresholdCandidatesOr)
+
+                NumberStatisticGrouping.LU_MC ->
+                    add = add && (nstat.indexLeastUsed < thresholdCandidatesOr ||
+                            nstat.indexMostCount < thresholdCandidatesOr)
+
+                NumberStatisticGrouping.LU_MC_LC ->
+                    add = add && (nstat.indexLeastUsed < thresholdCandidatesOr ||
+                            nstat.indexMostCount < thresholdCandidatesOr ||
+                            nstat.indexLeastCount < thresholdCandidatesOr)
+
+                NumberStatisticGrouping.MC_LC ->
+                    add = add && (nstat.indexMostCount < thresholdCandidatesOr ||
+                            nstat.indexLeastCount < thresholdCandidatesOr)
+
+                NumberStatisticGrouping.MU_LC ->
+                    add = add && (nstat.indexMostUsed < thresholdCandidatesOr ||
+                            nstat.indexLeastCount < thresholdCandidatesOr)
+
+                NumberStatisticGrouping.MU_LU ->
+                    add = add && (nstat.indexMostUsed < thresholdCandidatesOr ||
+                            nstat.indexLeastUsed < thresholdCandidatesOr)
+
+                NumberStatisticGrouping.MU_LU_LC ->
+                    add = add && (nstat.indexMostUsed < thresholdCandidatesOr ||
+                            nstat.indexLeastUsed < thresholdCandidatesOr ||
+                            nstat.indexLeastCount < thresholdCandidatesOr)
+
+                NumberStatisticGrouping.MU_LU_MC ->
+                    add =
+                        add && (nstat.indexMostUsed < thresholdCandidatesOr ||
+                                nstat.indexLeastUsed < thresholdCandidatesOr ||
+                                nstat.indexMostCount < thresholdCandidatesOr)
+
+                NumberStatisticGrouping.MU_LU_MC_LC ->
+                    add = add && (nstat.indexMostUsed < thresholdCandidatesOr ||
+                            nstat.indexLeastUsed < thresholdCandidatesOr ||
+                            nstat.indexMostCount < thresholdCandidatesOr ||
+                            nstat.indexLeastCount < thresholdCandidatesOr)
+
+                NumberStatisticGrouping.MU_MC ->
+                    add = add && (nstat.indexMostUsed < thresholdCandidatesOr ||
+                            nstat.indexMostCount < thresholdCandidatesOr)
+
+                NumberStatisticGrouping.MU_MC_LC ->
+                    add = add && (nstat.indexMostUsed < thresholdCandidatesOr ||
+                            nstat.indexMostCount < thresholdCandidatesOr ||
+                            nstat.indexLeastCount < thresholdCandidatesOr)
+
                 else -> Unit
             }
             if (add) {
@@ -121,7 +173,7 @@ class Lotto123Tester : LotteryTester<Lotto123>(Lotto123()) {
         private const val THRESHOLD_CANDIDATES_PERCENT = 50
 
         /**
-         * Maximum repeat of same number, even though statistically maximum is 9.
+         * Maximum repeat of same number.
          */
         private const val MAX_REPEAT_THRESHOLD = 8
 

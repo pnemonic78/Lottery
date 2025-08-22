@@ -9,12 +9,12 @@ enum class NumberStatisticGrouping(val description: String?) {
     /**
      * Most count.
      */
-    MOST_COUNT("Most count."),
+    MOST_COUNT("Most count"),
 
     /**
      * Least count.
      */
-    LEAST_COUNT("Least count."),
+    LEAST_COUNT("Least count"),
 
     /**
      * Most repeated.
@@ -29,87 +29,42 @@ enum class NumberStatisticGrouping(val description: String?) {
     /**
      * Most used.
      */
-    MOST_USED("Most used."),
+    MOST_USED("Most used"),
 
     /**
      * Least used.
      */
-    LEAST_USED("Least used."),
+    LEAST_USED("Least used"),
 
-    /**
-     * TODO comment me!
-     */
-    MC_LC(null),
+    MC_LC("MC or LC"),
 
-    /**
-     * TODO comment me!
-     */
-    LU_LC(null),
+    LU_LC("LU or LC"),
 
-    /**
-     * TODO comment me!
-     */
-    LU_MC(null),
+    LU_MC("LU or MC"),
 
-    /**
-     * TODO comment me!
-     */
-    LU_MC_LC(null),
+    LU_MC_LC("LU or MC or LC"),
 
-    /**
-     * TODO comment me!
-     */
-    MU_LC(null),
+    MU_LC("MU or LC"),
 
-    /**
-     * TODO comment me!
-     */
-    MU_MC(null),
+    MU_MC("MU or MC"),
 
-    /**
-     * TODO comment me!
-     */
-    MU_MC_LC(null),
+    MU_MC_LC("MU or MC or LC"),
 
-    /**
-     * TODO comment me!
-     */
-    MU_LU(null),
+    MU_LU("MU or LU"),
 
-    /**
-     * TODO comment me!
-     */
-    MU_LU_LC(null),
+    MU_LU_LC("MU or LU or LC"),
 
-    /**
-     * TODO comment me!
-     */
-    MU_LU_MC(null),
+    MU_LU_MC("MU or LU or MC"),
 
-    /**
-     * TODO comment me!
-     */
-    MU_LU_MC_LC(null),
+    MU_LU_MC_LC("MU or LU or MC or LC"),
 
-    /**
-     * TODO comment me!
-     */
-    LC_AND_LU(null),
+    LC_AND_LU("LC and LU"),
 
-    /**
-     * TODO comment me!
-     */
-    LC_AND_MU(null),
+    LC_AND_MU("LC and MU"),
 
-    /**
-     * TODO comment me!
-     */
-    MC_AND_LU(null),
+    MC_AND_LU("MC and LU"),
 
-    /**
-     * TODO comment me!
-     */
-    MC_AND_MU(null);
+    MC_AND_MU("MC and MU");
 
     override fun toString(): String {
         return description ?: name

@@ -1,46 +1,28 @@
 package com.github.pnemonic.game.lottery.pais123
 
-import com.github.pnemonic.csv.CSVFile
 import com.github.pnemonic.csv.CSVLine
+import com.github.pnemonic.game.lottery.CSVLotteryResultsReader
 import com.github.pnemonic.game.lottery.LotteryRecord
-import com.github.pnemonic.game.lottery.LotteryResultsReader
-import java.io.IOException
-import java.io.InputStream
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
 
-class Lotto123ResultsReader : LotteryResultsReader() {
-    @Throws(IOException::class)
-    override fun parse(input: InputStream): List<LotteryRecord> {
-        val records = mutableListOf<LotteryRecord>()
-        val csv = CSVFile(input)
-        val lines = csv.iterator()
-        var line: CSVLine
-        var columns: Array<String>
-        var record: LotteryRecord
-        val format: DateFormat = SimpleDateFormat("dd/MM/yyyy")
-        val numBalls = NUM_BALLS
+class Lotto123ResultsReader : CSVLotteryResultsReader() {
+    private val format: DateFormat = SimpleDateFormat("dd/MM/yyyy")
 
-        // ignore header
-        lines.next()
-        while (lines.hasNext()) {
-            line = lines.next()
-            record = LotteryRecord(numBalls)
-            columns = getCleanColumns(line)
+    override fun parseLine(line: CSVLine): LotteryRecord {
+        val record = LotteryRecord(NUM_BALLS)
+        val columns = getCleanColumns(line)
 
-            record.id = columns[COLUMN_SEQ].toInt()
-            record.date = Calendar.getInstance().apply {
-                time = format.parse(columns[COLUMN_DATE])
-            }
-            var col = COLUMN_BALL
-            for (i in 0 until numBalls) {
-                record.balls[i] = columns[col++].toInt()
-            }
-            records.add(record)
+        record.id = columns[COLUMN_SEQ].toInt()
+        record.date = Calendar.getInstance().apply {
+            time = format.parse(columns[COLUMN_DATE])
         }
-        csv.close()
-        return records
+        var col = COLUMN_BALL
+        for (i in 0 until NUM_BALLS) {
+            record.balls[i] = columns[col++].toInt()
+        }
+        return record
     }
 
     companion object {

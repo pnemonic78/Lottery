@@ -3,31 +3,31 @@ package com.github.pnemonic.game.lottery.pais123
 import com.github.pnemonic.game.NumberStatisticGrouping
 import com.github.pnemonic.game.lottery.LotteryGame
 import com.github.pnemonic.game.lottery.LotteryResultsReader
-import com.github.pnemonic.game.lottery.LotteryStats
 import com.github.pnemonic.game.lottery.LotteryTester
+import com.github.pnemonic.game.lottery.NumberStatisticsGames
 import com.github.pnemonic.game.lottery.pais123.Lotto123.Companion.COST
 import java.io.File
 
 /**
  * Test various strategies for "123".
  */
-class Lotto123Tester : LotteryTester<Lotto123>(Lotto123()) {
+class Lotto123Tester : LotteryTester<Lotto123, Lotto123Stats>(Lotto123()) {
     private val thresholdCandidates: Int = (numBalls * THRESHOLD_CANDIDATES_PERCENT) / 100
     private val thresholdCandidatesOr: Int = thresholdCandidates / 2
 
-    init {
-        require(thresholdCandidates >= lotterySize) { "too few candidates" }
-    }
+//    init {
+//        require(thresholdCandidates >= lotterySize) { "too few candidates" }
+//    }
 
     override fun createResultsReader(): LotteryResultsReader {
         return Lotto123ResultsReader()
     }
 
-    override fun createStats(lottery: Lotto123): LotteryStats<Lotto123> {
+    override fun createStats(lottery: Lotto123): Lotto123Stats {
         return Lotto123Stats(lottery)
     }
 
-    override fun drive(grouping: NumberStatisticGrouping, stats: LotteryStats<Lotto123>) {
+    override fun drive(grouping: NumberStatisticGrouping, stats: Lotto123Stats) {
         val numPlays = BUDGET / COST
         var wallet = BUDGET.toLong()
         var games: Collection<LotteryGame>
@@ -36,7 +36,7 @@ class Lotto123Tester : LotteryTester<Lotto123>(Lotto123()) {
         var wins = 0
 
         for (record in records) {
-            nextCandidates(grouping, stats, recordIndex)
+            predictNextCandidates(grouping, stats, recordIndex)
             games = play(numPlays, record)
             wallet -= games.size * COST
             for (game in games) {
@@ -53,17 +53,39 @@ class Lotto123Tester : LotteryTester<Lotto123>(Lotto123()) {
     /**
      * Use statistics to determine the next candidates.
      */
-    private fun nextCandidates(
-        grouping: NumberStatisticGrouping,
-        stats: LotteryStats<Lotto123>,
-        row: Int
-    ) {
+    private fun predictNextCandidates(grouping: NumberStatisticGrouping, stats: Lotto123Stats, row: Int) {
         if (row < 0) {
             lottery.setCandidates(null)
             return
         }
-        // Get the statistics.
-        val numStats = stats.numberStatistics
+        predictNextCandidates(grouping, stats.numberStatistics, row)
+        val candidatesUnits = lottery.getCandidates()
+        predictNextCandidates(grouping, stats.numberStatisticsTens, row)
+        val candidatesTens = lottery.getCandidates()
+        predictNextCandidates(grouping, stats.numberStatisticsHundreds, row)
+        val candidatesHundreds = lottery.getCandidates()
+
+        // Combine all units with tens and hundreds
+        val candidates = mutableListOf<Int>()
+        for (c1 in candidatesUnits) {
+            for (c10 in candidatesTens) {
+                for (c100 in candidatesHundreds) {
+                    val c = (c100 * 100) + (c10 * 10) + c1
+                    candidates.add(c)
+                }
+            }
+        }
+        lottery.setCandidates(candidates)
+    }
+
+    /**
+     * Use statistics to determine the next candidates.
+     */
+    private fun predictNextCandidates(
+        grouping: NumberStatisticGrouping,
+        numStats: NumberStatisticsGames,
+        row: Int
+    ) {
         val nstatRow = numStats[row]
         val candidates = mutableListOf<Int>()
         var add: Boolean
@@ -139,10 +161,9 @@ class Lotto123Tester : LotteryTester<Lotto123>(Lotto123()) {
                             nstat.indexLeastCount < thresholdCandidatesOr)
 
                 NumberStatisticGrouping.MU_LU_MC ->
-                    add =
-                        add && (nstat.indexMostUsed < thresholdCandidatesOr ||
-                                nstat.indexLeastUsed < thresholdCandidatesOr ||
-                                nstat.indexMostCount < thresholdCandidatesOr)
+                    add = add && (nstat.indexMostUsed < thresholdCandidatesOr ||
+                            nstat.indexLeastUsed < thresholdCandidatesOr ||
+                            nstat.indexMostCount < thresholdCandidatesOr)
 
                 NumberStatisticGrouping.MU_LU_MC_LC ->
                     add = add && (nstat.indexMostUsed < thresholdCandidatesOr ||
@@ -170,7 +191,7 @@ class Lotto123Tester : LotteryTester<Lotto123>(Lotto123()) {
 
     companion object {
         // per hundred
-        private const val THRESHOLD_CANDIDATES_PERCENT = 50
+        private const val THRESHOLD_CANDIDATES_PERCENT = 30
 
         /**
          * Maximum repeat of same number.

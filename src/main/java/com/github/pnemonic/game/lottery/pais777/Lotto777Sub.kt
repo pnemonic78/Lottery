@@ -12,8 +12,8 @@ import kotlin.math.floor
  * Choose numbers for subset of 777 in Israel (balls 1 to 35).
  */
 class Lotto777Sub : Lotto777() {
-    override val minimum: Int = MINIMUM
-    override val maximum: Int = 35
+    override val minimum = MINIMUM
+    override val maximum = 35
 
     @Throws(GameException::class)
     override fun filterGame(game: LotteryGame) {

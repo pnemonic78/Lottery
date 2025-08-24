@@ -10,10 +10,10 @@ import com.github.pnemonic.game.lottery.pais777.Lotto777Tester.Companion.BUDGET
  * Choose numbers for Lotto in Israel.
  */
 open class Lotto : Lottery(SIZE) {
-    override val minimum: Int = 1
-    override val maximum: Int = 37
-    override val bonusMinimum: Int = 1
-    override val bonusMaximum: Int = 8
+    override val minimum = 1
+    override val maximum = 37
+    override val bonusMinimum = 1
+    override val bonusMaximum = 8
 
     @Throws(GameException::class)
     override fun filter(game: LotteryGame, pickIndex: Int, bag: MutableList<Int>) {
@@ -101,7 +101,7 @@ open class Lotto : Lottery(SIZE) {
         /**
          * Cost per game.
          */
-        private const val BUDGET = 100.0
+        private const val BUDGET = 200
 
         /**
          * Cost per game.

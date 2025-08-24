@@ -19,14 +19,14 @@ class LottoStats(lottery: Lotto) : LotteryStats<Lotto>(lottery) {
         val thresholdCandidates = (numBalls * THRESHOLD_CANDIDATES_PERCENT) / 100
         val thresholdCandidatesAnd = min((thresholdCandidates * 3) / 2, numBalls / 2)
         val numStats = numberStatistics
-        val nstatRow: Array<NumberStatistic> = numStats[numStats.lastIndex]
+        val nstatRow = numStats[numStats.lastIndex]
         val asJava = StringBuilder()
         var add: Boolean
         for (nstat in nstatRow) {
             println(nstat)
             add = nstat.id >= lotteryMin && nstat.id <= lotteryMax
             add = add && (nstat.repeat < maxRepeat)
-            // Copy from Tester#nextCandidates and paste here:
+            // Copy from Tester#predictNextCandidates and paste here:
             add =
                 add && (nstat.indexLeastCount < thresholdCandidatesAnd && nstat.indexMostUsed < thresholdCandidatesAnd)
             if (add) {

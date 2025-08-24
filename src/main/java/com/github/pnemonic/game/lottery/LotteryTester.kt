@@ -4,12 +4,8 @@ import com.github.pnemonic.game.NumberStatisticGrouping
 import java.io.File
 import java.io.IOException
 
-abstract class LotteryTester<L: Lottery>(protected val lottery: L) {
+abstract class LotteryTester<L : Lottery, S : LotteryStats<L>>(protected val lottery: L) {
     protected val lotterySize: Int = lottery.size
-
-    protected val lotteryMin: Int = lottery.minimum
-
-    protected val lotteryMax: Int = lottery.maximum
 
     protected val numBalls: Int = lottery.numberBalls
 
@@ -33,9 +29,9 @@ abstract class LotteryTester<L: Lottery>(protected val lottery: L) {
         }
     }
 
-    protected abstract fun createStats(lottery: L): LotteryStats<L>
+    protected abstract fun createStats(lottery: L): S
 
-    protected abstract fun drive(grouping: NumberStatisticGrouping, stats: LotteryStats<L>)
+    protected abstract fun drive(grouping: NumberStatisticGrouping, stats: S)
 
     protected fun play(numGames: Int, record: LotteryRecord): List<LotteryGame> {
         val games = mutableListOf<LotteryGame>()

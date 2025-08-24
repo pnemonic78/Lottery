@@ -3,7 +3,6 @@ package com.github.pnemonic.game.lottery.pais777
 import com.github.pnemonic.game.NumberStatisticGrouping
 import com.github.pnemonic.game.lottery.LotteryGame
 import com.github.pnemonic.game.lottery.LotteryResultsReader
-import com.github.pnemonic.game.lottery.LotteryStats
 import com.github.pnemonic.game.lottery.LotteryTester
 import com.github.pnemonic.game.lottery.pais777.Lotto777.Companion.COST
 import java.io.File
@@ -11,7 +10,7 @@ import java.io.File
 /**
  * Test various strategies for "777".
  */
-class Lotto777Tester : LotteryTester<Lotto777>(Lotto777()) {
+class Lotto777Tester : LotteryTester<Lotto777, Lotto777Stats>(Lotto777()) {
     private val thresholdCandidates: Int = (numBalls * THRESHOLD_CANDIDATES_PERCENT) / 100
     private val thresholdCandidatesOr: Int = thresholdCandidates / 2
 
@@ -23,11 +22,11 @@ class Lotto777Tester : LotteryTester<Lotto777>(Lotto777()) {
         return Lotto777ResultsReader()
     }
 
-    override fun createStats(lottery: Lotto777): LotteryStats<Lotto777> {
+    override fun createStats(lottery: Lotto777): Lotto777Stats {
         return Lotto777Stats(lottery)
     }
 
-    override fun drive(grouping: NumberStatisticGrouping, stats: LotteryStats<Lotto777>) {
+    override fun drive(grouping: NumberStatisticGrouping, stats: Lotto777Stats) {
         val numPlays = BUDGET / COST
         var wallet = BUDGET.toLong()
         var games: Collection<LotteryGame>
@@ -36,7 +35,7 @@ class Lotto777Tester : LotteryTester<Lotto777>(Lotto777()) {
         var wins = 0
 
         for (record in records) {
-            nextCandidates(grouping, stats, recordIndex)
+            predictNextCandidates(grouping, stats, recordIndex)
             games = play(numPlays, record)
             wallet -= games.size * COST
             for (game in games) {
@@ -53,11 +52,7 @@ class Lotto777Tester : LotteryTester<Lotto777>(Lotto777()) {
     /**
      * Use statistics to determine the next candidates.
      */
-    private fun nextCandidates(
-        grouping: NumberStatisticGrouping,
-        stats: LotteryStats<Lotto777>,
-        row: Int
-    ) {
+    private fun predictNextCandidates(grouping: NumberStatisticGrouping, stats: Lotto777Stats, row: Int) {
         if (row < 0) {
             lottery.setCandidates(null)
             return
@@ -139,10 +134,9 @@ class Lotto777Tester : LotteryTester<Lotto777>(Lotto777()) {
                             nstat.indexLeastCount < thresholdCandidatesOr)
 
                 NumberStatisticGrouping.MU_LU_MC ->
-                    add =
-                        add && (nstat.indexMostUsed < thresholdCandidatesOr ||
-                                nstat.indexLeastUsed < thresholdCandidatesOr ||
-                                nstat.indexMostCount < thresholdCandidatesOr)
+                    add = add && (nstat.indexMostUsed < thresholdCandidatesOr ||
+                            nstat.indexLeastUsed < thresholdCandidatesOr ||
+                            nstat.indexMostCount < thresholdCandidatesOr)
 
                 NumberStatisticGrouping.MU_LU_MC_LC ->
                     add = add && (nstat.indexMostUsed < thresholdCandidatesOr ||

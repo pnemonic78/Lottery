@@ -12,6 +12,9 @@ import java.io.IOException
 import kotlin.math.max
 import kotlin.math.min
 
+typealias NumberStatisticsRow = Array<NumberStatistic>
+typealias NumberStatisticsGames = Array<NumberStatisticsRow>
+
 abstract class LotteryStats<L : Lottery>(protected val lottery: L) {
 
     protected val lotteryMin: Int = lottery.minimum
@@ -25,7 +28,7 @@ abstract class LotteryStats<L : Lottery>(protected val lottery: L) {
      * Get the number statistics. Each row represents a game. Each column
      * represents a ball.
      */
-    var numberStatistics: Array<Array<NumberStatistic>> = emptyArray()
+    var numberStatistics: NumberStatisticsGames = emptyArray()
         private set
 
     /**
@@ -90,14 +93,22 @@ abstract class LotteryStats<L : Lottery>(protected val lottery: L) {
         printNumberStats()
     }
 
-    fun processRecords(
+    open fun processRecords(
         records: List<LotteryRecord>,
         processRecordStatistics: Boolean = true,
         processNumberStatistics: Boolean = true
     ) {
+        generateNumberStatistics(records.size, numBalls = numBalls)
+        processRecords(records, numberStatistics, processRecordStatistics, processNumberStatistics)
+    }
+
+    fun processRecords(
+        records: List<LotteryRecord>,
+        numStats: NumberStatisticsGames,
+        processRecordStatistics: Boolean = true,
+        processNumberStatistics: Boolean = true
+    ) {
         recStats.clear()
-        numberStatistics =
-            Array(records.size) { Array(numBalls) { NumberStatistic(it + lotteryMin) } }
         maxLower = Int.MIN_VALUE
         minUpper = Int.MAX_VALUE
         maxGap = 0
@@ -108,12 +119,11 @@ abstract class LotteryStats<L : Lottery>(protected val lottery: L) {
         maxRepeat = 0
         val numPairs = Array(numBalls) { IntArray(numBalls) }
         this.numPairs = numPairs
-        val numStats = this.numberStatistics
         var rstat: RecordStatistic
         var nstat: NumberStatistic
         var nstatPrev: NumberStatistic
-        var numStatsRow: Array<NumberStatistic>
-        var numStatsRowPrev: Array<NumberStatistic>? = null
+        var numStatsRow: NumberStatisticsRow
+        var numStatsRowPrev: NumberStatisticsRow? = null
         var row = 0
 
         for (record in records) {
@@ -142,11 +152,8 @@ abstract class LotteryStats<L : Lottery>(protected val lottery: L) {
             }
 
             if (processNumberStatistics) {
-                for (ball in recordBalls) {
-                    val col = ball - lotteryMin
-                    nstat = numStatsRow[col]
-                    nstat.countGame++
-                }
+                incrementBallCounter(recordBalls, numStats, numStatsRow)
+
                 if (numStatsRowPrev != null) {
                     for (col in 0 until numBalls) {
                         nstat = numStatsRow[col]
@@ -208,6 +215,23 @@ abstract class LotteryStats<L : Lottery>(protected val lottery: L) {
             }
             numStatsRowPrev = numStatsRow
             row++
+        }
+    }
+
+    protected open fun generateNumberStatistics(recordsSize: Int, numBalls: Int) {
+        numberStatistics =
+            Array(recordsSize) { Array(numBalls) { NumberStatistic(it + lotteryMin) } }
+    }
+
+    protected open fun incrementBallCounter(
+        recordBalls: IntArray,
+        numStats: NumberStatisticsGames,
+        numStatsRow: NumberStatisticsRow
+    ) {
+        for (ball in recordBalls) {
+            val col = ball - lotteryMin
+            val nstat = numStatsRow[col]
+            nstat.countGame++
         }
     }
 

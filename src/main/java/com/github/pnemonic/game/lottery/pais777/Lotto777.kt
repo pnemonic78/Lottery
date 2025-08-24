@@ -12,10 +12,10 @@ import com.github.pnemonic.isEven
  * Choose numbers for 777 in Israel.
  */
 open class Lotto777 : Lottery(SIZE) {
-    override val minimum: Int = 1
-    override val maximum: Int = 70
-    override val bonusMinimum: Int = 0
-    override val bonusMaximum: Int = 0
+    override val minimum = 1
+    override val maximum = 70
+    override val bonusMinimum = 0
+    override val bonusMaximum = 0
 
     @Throws(GameException::class)
     override fun filterGame(game: LotteryGame) {

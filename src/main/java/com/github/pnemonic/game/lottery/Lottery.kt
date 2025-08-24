@@ -27,7 +27,7 @@ abstract class Lottery(val size: Int) : GameOfChance<LotteryGuess, LotteryGame> 
         get() = maximum - minimum + 1
 
     init {
-        setCandidates(emptyList<Int>())
+        setCandidates(null)
     }
 
     /**
@@ -55,7 +55,7 @@ abstract class Lottery(val size: Int) : GameOfChance<LotteryGuess, LotteryGame> 
         calculatePrizes(guess, result)
     }
 
-    open protected fun calculatePrizes(guess: LotteryGuess, result: LotteryGame) {
+    protected open fun calculatePrizes(guess: LotteryGuess, result: LotteryGame) {
         result.prize = 0
     }
 
@@ -103,16 +103,22 @@ abstract class Lottery(val size: Int) : GameOfChance<LotteryGuess, LotteryGame> 
         val guesses = mutableSetOf<LotteryGuess>()
         val games = mutableListOf<LotteryGame>()
         var retry = 0
+        var duplicates = 0
         while (games.size < maxNumGames) {
             try {
                 val guess = guess()
                 if (guesses.contains(guess)) {
+                    duplicates++
+                    if (duplicates >= RETRIES) {
+                        break
+                    }
                     continue
                 }
                 guesses.add(guess)
                 val game = record.copy()
                 play(guess, game)
                 games.add(game)
+                duplicates = 0
             } catch (e: GameException) {
                 // TODO System.err.println(e.getMessage());
                 retry++
@@ -168,7 +174,7 @@ abstract class Lottery(val size: Int) : GameOfChance<LotteryGuess, LotteryGame> 
         return LotteryGuess(balls = balls)
     }
 
-    fun setCandidates(candidates: Collection<Int>?) {
+    open fun setCandidates(candidates: Collection<Int>?) {
         this.candidates.clear()
         if (candidates == null || candidates.size < size) {
             val min = minimum
@@ -192,6 +198,8 @@ abstract class Lottery(val size: Int) : GameOfChance<LotteryGuess, LotteryGame> 
         setCandidates(balls)
     }
 
+    fun getCandidates(): List<Int> = candidates.toList()
+
     protected fun playBonus(game: LotteryGame) {
         if (bonusMinimum < bonusMaximum) {
             val bag = mutableListOf<Int>()
@@ -207,6 +215,7 @@ abstract class Lottery(val size: Int) : GameOfChance<LotteryGuess, LotteryGame> 
     }
 
     companion object {
+        @JvmStatic
         protected val rnd = Random.Default
         private const val RETRIES = 10
     }

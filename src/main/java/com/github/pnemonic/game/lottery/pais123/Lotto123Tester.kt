@@ -46,8 +46,9 @@ class Lotto123Tester : LotteryTester<Lotto123, Lotto123Stats>(Lotto123()) {
             numPlaysTotal += games.size
             recordIndex++
         }
+        val aveWins = wins.toFloat() / numPlaysTotal
         val aveScore = wallet.toFloat() / numPlaysTotal
-        println("$grouping:\t{wallet: $wallet, wins: $wins, ave.: $aveScore}")
+        println("$grouping:\t{wallet: $wallet, ave. wins: $aveWins, ave. score: $aveScore}")
     }
 
     /**
